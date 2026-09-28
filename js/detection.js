@@ -73,8 +73,8 @@ const CROP_DETECTION_REGISTRY = {
     icon: '🥬',
     isNerSpecial: false,
     regionNotes: 'Dominant rabi commercial crop throughout Nagaland, Meghalaya and Sikkim.',
-    durationDays: [30, 60],
-    durationHours: [720, 1440],
+    durationDays: [30, 45],
+    durationHours: [720, 1080],
     ambientDays: 7,
     tempMin: 0.0,
     tempMax: 4.0,
@@ -89,9 +89,9 @@ const CROP_DETECTION_REGISTRY = {
     precooling: 'Rapid hydro-cooling or forced chilled air',
     notes: 'Tolerates near-zero temperatures; requires near-saturation humidity to prevent outer leaf desiccation.',
     decayPhases: {
-      peak: 'Days 1–25: Turgid, crisp green wrappers',
-      good: 'Days 26–50: Solid head integrity',
-      critical: 'Days 51–60: Outer wrapper trimming required'
+      peak: 'Days 1–20: Turgid, crisp green wrappers',
+      good: 'Days 21–35: Solid head integrity',
+      critical: 'Days 36–45: Outer wrapper trimming required'
     }
   },
   cauliflower: {

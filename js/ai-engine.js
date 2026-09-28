@@ -26,17 +26,25 @@ const CROP_DATABASE = {
     icon: '🥔',
     notes: 'Table potatoes are best stored around 7°C with high humidity; avoid temperatures below 4°C to prevent cold-induced sweetening.'
   },
+cabbage: {
 
-  cabbage: {
-    name: 'Cabbage',
-    optimalTemp: [0, 0],
-    optimalHum: [95, 100],
-    maxHoursNominal: 6480, // ~9 months, upper end of 3–6 months range
-    chillingLimit: 0,
-    gasSensitivity: 1.1,
-    icon: '🥬',
-    notes: 'Best stored near 0°C with relative humidity above 95% to maintain crispness and quality.'
-  },
+  name: 'Cabbage',
+
+  optimalTemp: [0, 0],
+
+  optimalHum: [95, 100],
+
+  maxHoursNominal: 1080, // 45 days (30–45 days)
+
+  chillingLimit: 0,
+
+  gasSensitivity: 1.1,
+
+  icon: '🥬',
+
+  notes: 'Best stored near 0°C with relative humidity above 95% to maintain crispness and quality. Expected storage life: 30–45 days.'
+
+},
 
   cauliflower: {
     name: 'Cauliflower',
