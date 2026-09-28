@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Live Storage Monitoring Dashboard | FreshVault NER</title>
+  <meta name="description" content="Real-time IoT microclimate telemetry, chamber digital twin 3D viewer, solar battery storage metrics, and dynamic alert controls for FreshVault cold storage.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+</head>
+<body>
+
+  <!-- Sticky Navigation Bar -->
+  <header class="navbar" id="navbar">
+    <div class="container navbar-inner">
+      <a href="index.html" class="nav-brand">
+        <div class="brand-icon">❄️</div>
+        <span>FreshVault</span>
+        <span class="ner-pill">NER</span>
+      </a>
+
+      <nav>
+        <ul class="nav-links" id="nav-links-menu">
+          <li><a href="index.html" class="nav-link">Home</a></li>
+          <li><a href="detection.html" class="nav-link">Detection</a></li>
+          <li><a href="dashboard.html" class="nav-link active">Live Dashboard</a></li>
+          <li><a href="ai-insights.html" class="nav-link">AI Freshness</a></li>
+        
+          <li><a href="settings.html" class="nav-link">Settings</a></li>
+        </ul>
+      </nav>
+
+      <div class="nav-actions">
+        <a href="settings.html" class="btn btn-primary btn-sm">Chamber Settings</a>
+        <button class="mobile-menu-toggle" id="mobile-menu-toggle" aria-label="Toggle menu">☰</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- =========================================================================
+       SECTION: LIVE MONITORING DASHBOARD
+       ========================================================================= -->
+  <section class="section" id="dashboard" style="padding-top: 120px;">
+    <div class="container">
+      <div class="section-header">
+        <div class="badge-tag">IoT Telemetry & Digital Twin</div>
+        <h1 class="section-title">Live Storage Monitoring Dashboard</h1>
+        <p class="section-subtitle">
+          Real-time interface for farmers and field operators to supervise internal microclimate parameters, solar charge state, actuator duty cycles, and crop freshness indices.
+        </p>
+      </div>
+
+      <div class="dashboard-frame">
+        <!-- Topbar -->
+        <div class="dash-topbar">
+          <div class="dash-title-group">
+            <span class="dash-dot-live"></span>
+            <h3>Smart Storage Monitor</h3>
+          </div>
+          <div class="dash-meta-tags">
+            <span class="dash-meta-pill">UNIT: FV-NER-004</span>
+            <span class="dash-meta-pill">LOC: Shillong Agri Hub</span>
+            <span class="dash-meta-pill" id="dash-crop-pill">CROP: Tomato 🍅</span>
+          </div>
+        </div>
+
+        <!-- Live Chamber Crop Switcher Control Bar -->
+        <div class="dash-crop-control-bar">
+          <div class="dash-crop-select-group">
+            <label for="dash-crop-select" class="dash-crop-label">
+              <span>🌾</span> <span>Change Stored Crop:</span>
+            </label>
+            <select id="dash-crop-select" class="dash-crop-dropdown" aria-label="Select stored crop">
+              <optgroup label="⭐ NER GI Specials">
+                <option value="tomato" selected>🍅 Tomato (10–14°C | 88% RH)</option>
+                <option value="cabbage">🥬 Cabbage (0–4°C | 94% RH | 30–45d)</option>
+                <option value="king_chilli">🔥 King Chilli / Bhut Jolokia (7.5–10.5°C)</option>
+                <option value="ginger">🫚 Fresh Ginger / Nadia (12–14°C)</option>
+                <option value="khasi_mandarin">🍊 Khasi Mandarin (5–8°C)</option>
+                <option value="pineapple">🍍 Kew / Queen Pineapple (8–12°C)</option>
+              </optgroup>
+              <optgroup label="🥦 Daily Perishable Vegetables">
+                <option value="cauliflower">🥦 Cauliflower (0–4°C | 93% RH)</option>
+                <option value="carrot">🥕 Carrot (0–4°C | 96% RH)</option>
+                <option value="green_beans">🫘 Green Beans (5–8°C | 92% RH)</option>
+                <option value="leafy_greens">🥗 Leafy Greens / Lai Xaak (0–2°C)</option>
+                <option value="cucumber">🥒 Cucumber (10–13°C | 92% RH)</option>
+                <option value="capsicum">🫑 Capsicum / Bell Pepper (7–10°C)</option>
+                <option value="chilli">🌶️ Green Chilli (8–12°C)</option>
+                <option value="potato">🥔 Potato (8–12°C | 88% RH)</option>
+              </optgroup>
+              <optgroup label="🧊 Multi-Crop Mixed Load Presets">
+                <option value="mixed_cabbage_tomato">🥗 Mixed: Cabbage + Tomato (10.0°C)</option>
+                <option value="mixed_cole_roots">🥦 Mixed: Cole & Roots (1.5°C | 95% RH)</option>
+                <option value="mixed_ner_spices">🔥 Mixed: NER Spices (12.0°C)</option>
+              </optgroup>
+            </select>
+          </div>
+
+          <div class="dash-quick-crops-pills">
+            <span class="dash-quick-pills-label">Quick Switch:</span>
+            <button type="button" class="dash-crop-chip active" data-crop="tomato">🍅 Tomato</button>
+            <button type="button" class="dash-crop-chip" data-crop="cabbage">🥬 Cabbage (30–45d)</button>
+            <button type="button" class="dash-crop-chip" data-crop="king_chilli">🔥 King Chilli</button>
+            <button type="button" class="dash-crop-chip" data-crop="ginger">🫚 Ginger</button>
+            <button type="button" class="dash-crop-chip" data-crop="potato">🥔 Potato</button>
+            <button type="button" class="dash-crop-chip" data-crop="leafy_greens">🥗 Leafy Greens</button>
+          </div>
+        </div>
+
+        <!-- Dashboard Body -->
+        <div class="dash-body">
+          <!-- Telemetry Metric Cards -->
+          <div class="telemetry-cards-grid">
+            <div class="telemetry-card" id="dash-card-temp">
+              <div class="telemetry-card-header">
+                <span>Chamber Temperature</span>
+                <span>🌡️</span>
+              </div>
+              <div class="telemetry-val temp" id="dash-temp-val">12.2°C</div>
+              <div class="telemetry-subtext" id="dash-temp-target">Target: 10.0°C – 14.0°C (Setpoint: 12.0°C)</div>
+            </div>
+
+            <div class="telemetry-card" id="dash-card-hum">
+              <div class="telemetry-card-header">
+                <span>Chamber Humidity</span>
+                <span>💧</span>
+              </div>
+              <div class="telemetry-val hum" id="dash-hum-val">88%</div>
+              <div class="telemetry-subtext" id="dash-hum-target">Target: 85% – 90% RH (Setpoint: 88%)</div>
+            </div>
+
+            <div class="telemetry-card" id="dash-card-batt">
+              <div class="telemetry-card-header">
+                <span>Battery Storage (LiFePO4)</span>
+                <span>🔋</span>
+              </div>
+              <div class="telemetry-val batt" id="dash-batt-val">78%</div>
+              <div class="telemetry-subtext">Solar Inflow: +142W</div>
+            </div>
+
+            <div class="telemetry-card" id="dash-card-fresh">
+              <div class="telemetry-card-header">
+                <span>Crop Freshness Insight</span>
+                <span>🧠</span>
+              </div>
+              <div class="telemetry-val fresh" id="dash-insight-val">OPTIMAL</div>
+              <div class="telemetry-subtext" id="dash-insight-subtext">Est. Safe Window: ~14–21 Days</div>
+            </div>
+          </div>
+
+          <!-- Status Indicators Row -->
+          <div class="status-indicators-row">
+            <div class="status-mini-card">
+              <span class="status-mini-left">Solar Harvesting</span>
+              <span class="status-mini-badge green" id="dash-solar-val">142W (Available)</span>
+            </div>
+
+            <div class="status-mini-card">
+              <span class="status-mini-left">DC Cooling Unit</span>
+              <span class="status-mini-badge blue" id="dash-cooling-val">ON (Duty 45%)</span>
+            </div>
+
+            <div class="status-mini-card">
+              <span class="status-mini-left">Door Interlock</span>
+              <span class="status-mini-badge green" id="dash-door-val">CLOSED</span>
+            </div>
+
+            <div class="status-mini-card">
+              <span class="status-mini-left">Uplink Gateway</span>
+              <span class="status-mini-badge blue" id="dash-conn-val">GSM / LoRa</span>
+            </div>
+          </div>
+
+          <!-- Interactive Action Triggers -->
+          <div style="display: flex; gap: 12px; margin-bottom: 24px; flex-wrap: wrap;">
+            <button class="btn btn-secondary btn-sm" id="btn-sim-door">🚪 Simulate Door Opening</button>
+            <button class="btn btn-secondary btn-sm" id="btn-sim-cooling">❄️ Toggle Cooling State</button>
+            <button class="btn btn-secondary btn-sm" id="btn-ping-sync">📡 Test Telemetry Sync</button>
+           
+          </div>
+
+          <!-- Chart Visualizers -->
+          <div class="dash-charts-grid">
+            <div class="chart-card-box">
+              <div class="chart-card-title">
+                <span>Chamber Temperature Trend</span>
+                <span class="unit">Degrees Celsius (°C)</span>
+              </div>
+              <div class="chart-canvas-container">
+                <canvas id="chart-temp"></canvas>
+              </div>
+            </div>
+
+            <div class="chart-card-box">
+              <div class="chart-card-title">
+                <span>Chamber Relative Humidity Trend</span>
+                <span class="unit">Percentage (% RH)</span>
+              </div>
+              <div class="chart-canvas-container">
+                <canvas id="chart-humidity"></canvas>
+              </div>
+            </div>
+
+            <div class="chart-card-box">
+              <div class="chart-card-title">
+                <span>Battery State of Charge (SoC)</span>
+                <span class="unit">Percentage (%)</span>
+              </div>
+              <div class="chart-canvas-container">
+                <canvas id="chart-battery"></canvas>
+              </div>
+            </div>
+
+            <div class="chart-card-box">
+              <div class="chart-card-title">
+                <span>Cooling Actuator Duty Cycle</span>
+                <span class="unit">Active %</span>
+              </div>
+              <div class="chart-canvas-container">
+                <canvas id="chart-cooling"></canvas>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="dash-disclaimer-bar">
+          Values shown are real-time telemetry streaming from FreshVault prototype node FV-NER-004.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Site Footer -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand-col">
+          <div class="footer-brand">
+            <div class="brand-icon">❄️</div>
+            <span>FreshVault</span>
+            <span class="ner-pill">NER</span>
+          </div>
+          <p class="footer-tagline">
+            Solar-powered decentralized smart mini cold storage engineered for the unique agricultural topography, perishable crops, and off-grid realities of North Eastern India.
+          </p>
+          <div class="footer-badge">
+            Smart India Hackathon • Problem Statement #1736
+          </div>
+        </div>
+
+        <div class="footer-col">
+          <div class="footer-col-title">Navigation Hub</div>
+          <ul class="footer-links">
+            <li><a href="index.html">Home & Overview</a></li>
+            <li><a href="detection.html">Crop Detection Protocol</a></li>
+            <li><a href="dashboard.html">Live IoT Dashboard</a></li>
+            <li><a href="ai-insights.html">AI Freshness Insights</a></li>
+            <li><a href="vegetables.html">Crop Storage Profiles</a></li>
+            <li><a href="settings.html">Operator Settings</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <div class="footer-col-title">System Status</div>
+          <ul class="footer-links">
+            <li><span style="color: #10B981;">●</span> Node FV-NER-004 Online</li>
+            <li><span style="color: #38BDF8;">●</span> Solar Harvest: 142W</li>
+            <li><span style="color: #A855F7;">●</span> Dual GSM/LoRa Mesh Active</li>
+            <li><span style="color: #10B981;">●</span> Ultrasonic Humidifier Ready</li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <div class="footer-col-title">Quick Actions</div>
+          <ul class="footer-links">
+            <li><a href="detection.html">Multi-Crop Balancer</a></li>
+            <li><a href="ai-insights.html">Freshness Simulator</a></li>
+            <li><a href="settings.html">Configure Alarm Thresholds</a></li>
+            <li><a href="vegetables.html">Vegetable Guidelines</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <div>
+          © 2026 FreshVault NER — Smart India Hackathon Project. All rights reserved.
+        </div>
+        <div style="display: flex; gap: 16px;">
+          <span>Deep-Tech AgriTech Architecture</span>
+          <span>•</span>
+          <span>Decentralized Cold Chain</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Multi-Device Access Floating Button & QR Modal -->
+  <button class="floating-share-btn" id="open-share-modal-btn" aria-label="Open on phone / Share">
+    <span>📱</span>
+    <span>Open on Phone / QR</span>
+  </button>
+
+  <div class="share-modal-backdrop" id="share-modal">
+    <div class="share-modal-card">
+      <button class="share-modal-close" id="close-share-modal-btn" aria-label="Close modal">✕</button>
+      <div style="font-size: 2rem; margin-bottom: 8px;">📲</div>
+      <h3 style="color: #1F4E79; font-weight: 800; font-size: 1.25rem; margin-bottom: 6px;">Open on Mobile / Any Device</h3>
+      <p style="font-size: 0.84rem; color: #4B5563; line-height: 1.45;">
+        Scan this QR code with any phone or tablet on the same Wi-Fi network, or open the link directly in your mobile browser.
+      </p>
+
+      <div class="qr-box-container" id="qr-code-canvas"></div>
+
+      <div class="url-copy-box">
+        <input type="text" id="share-url-input" class="url-input-field" readonly value="http://192.168.1.9:8080">
+        <button class="btn btn-primary btn-sm" id="copy-url-btn">Copy</button>
+      </div>
+      <span id="copy-status-msg" style="display: block; font-size: 0.76rem; color: #10B981; font-weight: 600; margin-top: 6px; min-height: 16px;"></span>
+    </div>
+  </div>
+
+  <!-- Application Scripts -->
+  <script src="js/3d-viewer.js"></script>
+  <script src="js/dashboard.js"></script>
+  <script src="js/app.js"></script>
+
+</body>
+</html>

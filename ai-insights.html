@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Freshness & Decision Support | FreshVault NER</title>
+  <meta name="description" content="AI-driven crop freshness degradation modeling, remaining safe shelf life estimation, and actionable farmer dispatch recommendations.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+</head>
+<body>
+
+  <!-- Sticky Navigation Bar -->
+  <header class="navbar" id="navbar">
+    <div class="container navbar-inner">
+      <a href="index.html" class="nav-brand">
+        <div class="brand-icon">❄️</div>
+        <span>FreshVault</span>
+        <span class="ner-pill">NER</span>
+      </a>
+
+      <nav>
+        <ul class="nav-links" id="nav-links-menu">
+          <li><a href="index.html" class="nav-link">Home</a></li>
+          <li><a href="detection.html" class="nav-link">Detection</a></li>
+          <li><a href="dashboard.html" class="nav-link">Live Dashboard</a></li>
+          <li><a href="ai-insights.html" class="nav-link active">AI Freshness</a></li>
+          
+          <li><a href="settings.html" class="nav-link">Settings</a></li>
+        </ul>
+      </nav>
+
+      <div class="nav-actions">
+        <a href="dashboard.html" class="btn btn-primary btn-sm">Explore Dashboard</a>
+        <button class="mobile-menu-toggle" id="mobile-menu-toggle" aria-label="Toggle menu">☰</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- =========================================================================
+       SECTION: AI FRESHNESS & SMART DECISION SUPPORT
+       ========================================================================= -->
+  <section class="section section-alt" id="ai-insights" style="padding-top: 120px; min-height: 80vh;">
+    <div class="container">
+      <div class="section-header">
+        <div class="badge-tag navy">Decision Support & Predictive Modeling</div>
+        <h1 class="section-title">From Monitoring to Decision Support</h1>
+        <p class="section-subtitle">
+          AI processes continuous microclimate data trends, cumulative degree-hours, and crop-specific respiration rates to deliver precise, actionable market dispatch recommendations for farmers.
+        </p>
+      </div>
+
+      <div class="ai-insights-grid">
+        <!-- AI Pipeline Explainer -->
+        <div class="ai-flow-explainer">
+          <div class="ai-step-box">
+            <div class="ai-step-icon">📊</div>
+            <div class="ai-step-content">
+              <h4>1. Continuous Sensor Data Stream</h4>
+              <p>Samples dry-bulb temperature, relative humidity, door opening frequency, and supplementary spoilage gas indicators.</p>
+            </div>
+          </div>
+
+          <div class="ai-step-box">
+            <div class="ai-step-icon">⚡</div>
+            <div class="ai-step-content">
+              <h4>2. Crop Physiology Processing</h4>
+              <p>Compares observed microclimate curves against crop-specific respiration rates and chilling injury thresholds.</p>
+            </div>
+          </div>
+
+          <div class="ai-step-box">
+            <div class="ai-step-icon">🧠</div>
+            <div class="ai-step-content">
+              <h4>3. Freshness Index Estimation</h4>
+              <p>Calculates remaining storage life index and flags thermal excursions or humidity deficits in real time.</p>
+            </div>
+          </div>
+
+          <div class="ai-step-box">
+            <div class="ai-step-icon">📢</div>
+            <div class="ai-step-content">
+              <h4>4. Farmer Action Recommendation</h4>
+              <p>Generates simple color-coded decisions: 🟢 GOOD, 🟡 USE SOON, or 🔴 SELL FIRST to avoid distress selling.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Interactive AI Decision Engine Simulator -->
+        <div class="ai-interactive-simulator">
+          <div class="ai-sim-header">
+            <h4>Interactive Decision-Support Simulator</h4>
+            <p>Adjust parameters below to see how the decision-support algorithm evaluates crop status.</p>
+          </div>
+
+          <div class="ai-inputs-grid">
+            <div class="ai-input-group">
+              <label for="ai-crop-select">Selected Produce Crop:</label>
+              <select id="ai-crop-select" class="ai-select">
+                <option value="tomato">Tomato (Solanum lycopersicum)</option>
+                <option value="potato">Potato (Solanum tuberosum)</option>
+                <option value="cabbage">Cabbage (Brassica oleracea)</option>
+                <option value="cauliflower">Cauliflower</option>
+                <option value="carrot">Carrot (Daucus carota)</option>
+                <option value="green_beans">Green Beans</option>
+                <option value="leafy_greens">Leafy Greens / Mustard</option>
+                <option value="cucumber">Cucumber</option>
+                <option value="capsicum">Capsicum / Bell Pepper</option>
+                <option value="chilli">Chilli Pepper</option>
+              </select>
+            </div>
+
+            <div class="ai-input-group">
+              <label>Storage Duration: <span id="ai-hours-display" class="ai-range-val">48 hrs (2.0 days)</span></label>
+              <input type="range" id="ai-hours-slider" min="6" max="720" step="6" value="48" class="ai-range-wrap">
+            </div>
+
+            <div class="ai-input-group">
+              <label>Chamber Temp: <span id="ai-temp-display" class="ai-range-val">7.2°C</span></label>
+              <input type="range" id="ai-temp-slider" min="0" max="25" step="0.5" value="7.2" class="ai-range-wrap">
+            </div>
+
+            <div class="ai-input-group">
+              <label>Chamber Humidity: <span id="ai-hum-display" class="ai-range-val">82%</span></label>
+              <input type="range" id="ai-hum-slider" min="40" max="98" step="1" value="82" class="ai-range-wrap">
+            </div>
+
+            <div class="ai-input-group" style="grid-column: 1 / -1;">
+              <label for="ai-gas-select">Supplementary Gas/VOC Indicator Level:</label>
+              <select id="ai-gas-select" class="ai-select">
+                <option value="low">Baseline Low (Normal respiration)</option>
+                <option value="medium">Moderate VOC Activity (Early ripening/metabolism)</option>
+                <option value="elevated">Elevated Spoilage Indicators (Tissue breakdown risk)</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Dynamic Result Box -->
+          <div class="ai-result-panel">
+            <div id="ai-sim-status-pill" class="freshness-status-pill good">🟢 GOOD</div>
+            <div id="ai-sim-score-val" style="font-weight: 800; font-size: 0.95rem; color: #1F4E79; margin-bottom: 8px;">
+              Estimated Freshness Index: 88%
+            </div>
+            <div id="ai-sim-rationale" class="ai-rationale-text">
+              <strong>Physiological Analysis:</strong> Storage conditions are well-aligned with Tomato physiological tolerances. High market grade maintained. Safe to hold for scheduled logistics.
+            </div>
+            <div id="ai-target-range-info" style="font-size: 0.76rem; font-weight: 700; color: #64748B; margin-top: 10px;">
+              Optimal Target: 10–14°C | 85–90% RH
+            </div>
+          </div>
+
+          <div style="margin-top: 18px; display: flex; gap: 10px; justify-content: flex-end;">
+            <a href="detection.html" class="btn btn-secondary btn-sm">🌾 Go to Crop Detection</a>
+            <a href="dashboard.html" class="btn btn-primary btn-sm">⚡ Apply to Live Monitor</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Site Footer -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand-col">
+          <div class="footer-brand">
+            <div class="brand-icon">❄️</div>
+            <span>FreshVault</span>
+            <span class="ner-pill">NER</span>
+          </div>
+          <p class="footer-tagline">
+            Solar-powered decentralized smart mini cold storage engineered for the unique agricultural topography, perishable crops, and off-grid realities of North Eastern India.
+          </p>
+          <div class="footer-badge">
+            Smart India Hackathon • Problem Statement #1736
+          </div>
+        </div>
+
+        <div class="footer-col">
+          <div class="footer-col-title">Navigation Hub</div>
+          <ul class="footer-links">
+            <li><a href="index.html">Home & Overview</a></li>
+            <li><a href="detection.html">Crop Detection Protocol</a></li>
+            <li><a href="dashboard.html">Live IoT Dashboard</a></li>
+            <li><a href="ai-insights.html">AI Freshness Insights</a></li>
+            <li><a href="vegetables.html">Crop Storage Profiles</a></li>
+            <li><a href="settings.html">Operator Settings</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <div class="footer-col-title">AI Engine Models</div>
+          <ul class="footer-links">
+            <li><a href="ai-insights.html">Arrhenius Respiration Model</a></li>
+            <li><a href="ai-insights.html">Chilling Injury Floor Detector</a></li>
+            <li><a href="ai-insights.html">Vapor Deficit Transpiration Model</a></li>
+            <li><a href="ai-insights.html">Predictive Dispatch Engine</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <div class="footer-col-title">Agricultural Impact</div>
+          <ul class="footer-links">
+            <li><a href="vegetables.html">30–45 Days Cabbage Holding</a></li>
+            <li><a href="vegetables.html">60–120 Days Ginger Storage</a></li>
+            <li><a href="detection.html">Zero Chilling Injury King Chilli</a></li>
+            <li><a href="index.html">Distress Selling Prevention</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <div>
+          © 2026 FreshVault NER — Smart India Hackathon Project. All rights reserved.
+        </div>
+        <div style="display: flex; gap: 16px;">
+          <span>Deep-Tech AgriTech Architecture</span>
+          <span>•</span>
+          <span>Decentralized Cold Chain</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Multi-Device Access Floating Button & QR Modal -->
+  <button class="floating-share-btn" id="open-share-modal-btn" aria-label="Open on phone / Share">
+    <span>📱</span>
+    <span>Open on Phone / QR</span>
+  </button>
+
+  <div class="share-modal-backdrop" id="share-modal">
+    <div class="share-modal-card">
+      <button class="share-modal-close" id="close-share-modal-btn" aria-label="Close modal">✕</button>
+      <div style="font-size: 2rem; margin-bottom: 8px;">📲</div>
+      <h3 style="color: #1F4E79; font-weight: 800; font-size: 1.25rem; margin-bottom: 6px;">Open on Mobile / Any Device</h3>
+      <p style="font-size: 0.84rem; color: #4B5563; line-height: 1.45;">
+        Scan this QR code with any phone or tablet on the same Wi-Fi network, or open the link directly in your mobile browser.
+      </p>
+
+      <div class="qr-box-container" id="qr-code-canvas"></div>
+
+      <div class="url-copy-box">
+        <input type="text" id="share-url-input" class="url-input-field" readonly value="http://192.168.1.9:8080">
+        <button class="btn btn-primary btn-sm" id="copy-url-btn">Copy</button>
+      </div>
+      <span id="copy-status-msg" style="display: block; font-size: 0.76rem; color: #10B981; font-weight: 600; margin-top: 6px; min-height: 16px;"></span>
+    </div>
+  </div>
+
+  <!-- Application Scripts -->
+  <script src="js/ai-engine.js"></script>
+  <script src="js/app.js"></script>
+
+</body>
+</html>

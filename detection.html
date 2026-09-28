@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Crop Detection & Microclimate Protocol | FreshVault NER</title>
+  <meta name="description" content="Intelligent Crop Detection, Storage Duration Protocol & Multi-Crop Chamber Balancer for solar-powered decentralized cold storage.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+</head>
+<body>
+
+  <!-- Sticky Navigation Bar -->
+  <header class="navbar" id="navbar">
+    <div class="container navbar-inner">
+      <a href="index.html" class="nav-brand">
+        <div class="brand-icon">❄️</div>
+        <span>FreshVault</span>
+        <span class="ner-pill">NER</span>
+      </a>
+
+      <nav>
+        <ul class="nav-links" id="nav-links-menu">
+          <li><a href="index.html" class="nav-link">Home</a></li>
+          <li><a href="detection.html" class="nav-link active">Detection</a></li>
+          <li><a href="dashboard.html" class="nav-link">Live Dashboard</a></li>
+          <li><a href="ai-insights.html" class="nav-link">AI Freshness</a></li>
+         
+          <li><a href="settings.html" class="nav-link">Settings</a></li>
+        </ul>
+      </nav>
+
+      <div class="nav-actions">
+        <a href="dashboard.html" class="btn btn-primary btn-sm">Explore Dashboard</a>
+        <button class="mobile-menu-toggle" id="mobile-menu-toggle" aria-label="Toggle menu">☰</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- =========================================================================
+       SECTION: CROP DETECTION & MICROCLIMATE PROTOCOL
+       ========================================================================= -->
+  <section class="section" id="detection" style="padding-top: 120px;">
+    <div class="container">
+      <div class="section-header">
+        <div class="badge-tag">Crop Detection & Intelligence</div>
+        <h1 class="section-title">Crop Detection & Storage Protocol</h1>
+        <p class="section-subtitle">
+          Select any harvested crop to instantly calculate its optimal storage duration, precise chamber temperature, and target chamber humidity setpoints tailored for North Eastern conditions.
+        </p>
+      </div>
+
+      <div class="detect-container">
+        <!-- Crop Selection & Toolbar Card -->
+        <div class="detect-toolbar-card">
+          <div class="detect-toolbar-top">
+            <div class="detect-search-box">
+              <span class="detect-search-icon">🔍</span>
+              <input type="text" id="detect-crop-search" placeholder="Search crop by name, botanical name, or category..." autocomplete="off">
+            </div>
+
+            <div class="detect-dropdown-wrap">
+              <label for="detect-quick-dropdown" class="detect-dropdown-label">Select Crop:</label>
+              <select id="detect-quick-dropdown" class="detect-quick-select">
+                <optgroup label="⭐ High-Priority NER GI Specials">
+                  <option value="king_chilli">King Chilli / Bhut Jolokia (Assam/Nagaland)</option>
+                  <option value="ginger">Fresh Ginger / Nadia (Karbi Anglong)</option>
+                  <option value="khasi_mandarin">Khasi Mandarin / Orange (Meghalaya)</option>
+                  <option value="pineapple">Kew / Queen Pineapple (Tripura)</option>
+                </optgroup>
+                <optgroup label="🥦 Daily Perishable Vegetables">
+                  <option value="tomato" selected>Tomato (Solanum lycopersicum)</option>
+                  <option value="cabbage">Cabbage (Brassica oleracea)</option>
+                  <option value="cauliflower">Cauliflower (Brassica oleracea botrytis)</option>
+                  <option value="green_beans">Green Beans / French Beans</option>
+                  <option value="leafy_greens">Leafy Greens / Lai Xaak (Mustard)</option>
+                  <option value="cucumber">Cucumber (Cucumis sativus)</option>
+                  <option value="capsicum">Capsicum / Bell Pepper</option>
+                  <option value="chilli">Green Chilli (Capsicum frutescens)</option>
+                </optgroup>
+                <optgroup label="🥔 Roots & Tubers">
+                  <option value="potato">Potato (Solanum tuberosum)</option>
+                  <option value="carrot">Carrot (Daucus carota)</option>
+                </optgroup>
+              </select>
+            </div>
+          </div>
+
+          <!-- Category Filter Pills -->
+          <div class="detect-filters-row">
+            <button class="detect-filter-btn active" data-category="all">All Crops (14)</button>
+            <button class="detect-filter-btn" data-category="ner_special">⭐ NER GI Specials</button>
+            <button class="detect-filter-btn" data-category="vegetables">Vegetables</button>
+            <button class="detect-filter-btn" data-category="cole">Cole Crops</button>
+            <button class="detect-filter-btn" data-category="roots">Roots & Tubers</button>
+            <button class="detect-filter-btn" data-category="greens">Leafy Greens</button>
+            <button class="detect-filter-btn" data-category="fruits">Fruits & Spices</button>
+          </div>
+
+          <!-- Crop Selection Grid -->
+          <div class="detect-crop-grid" id="detect-crop-grid">
+            <!-- Dynamically populated by js/detection.js -->
+          </div>
+        </div>
+
+        <!-- Detection Output Hub -->
+        <div class="detect-output-hub">
+          <!-- Topbar with Crop Details -->
+          <div class="detect-hub-topbar">
+            <div class="detect-crop-header-left">
+              <div class="detect-out-icon-circle" id="detect-out-icon">🍅</div>
+              <div class="detect-crop-header-titles">
+                <h3 id="detect-out-name">Tomato</h3>
+                <p id="detect-out-scientific">Solanum lycopersicum</p>
+              </div>
+            </div>
+            <div class="detect-topbar-badges">
+              <span class="detect-badge-pill" id="detect-out-category">Solanaceous Vegetable</span>
+              <span class="detect-badge-pill gold" id="detect-out-ner-badge" style="display: none;">★ NER GI Heritage Crop</span>
+            </div>
+          </div>
+
+          <div class="detect-hub-body">
+            <!-- Harvest Condition Customizer -->
+            <div class="detect-condition-bar">
+              <div class="detect-condition-title">
+                <span>🌾</span> Harvest Stage & Pre-Cooling Condition:
+              </div>
+              <div class="detect-condition-options">
+                <label class="detect-condition-label">
+                  <input type="radio" name="crop-harvest-condition" value="1.0" checked>
+                  Fresh Harvest (Standard)
+                </label>
+                <label class="detect-condition-label">
+                  <input type="radio" name="crop-harvest-condition" value="0.85">
+                  Field Stored 12-24h (-15%)
+                </label>
+                <label class="detect-condition-label">
+                  <input type="radio" name="crop-harvest-condition" value="1.15">
+                  Hydro / Forced-Air Pre-Cooled (+15%)
+                </label>
+              </div>
+            </div>
+
+            <!-- The Primary Triad Output Cards (Duration, Temperature, Humidity) -->
+            <div class="detect-triad-grid">
+              <!-- 1. STORAGE DURATION OUTPUT -->
+              <div class="detect-metric-card card-duration">
+                <div>
+                  <div class="detect-card-header">
+                    <span class="detect-card-title">1. Storage Duration</span>
+                    <span class="detect-card-icon">⏱️</span>
+                  </div>
+                  <div class="detect-primary-val" id="detect-out-duration-val">14 – 21 Days</div>
+                  <div class="detect-sub-val" id="detect-out-duration-hours">(~336 – 504 Hours of Safe Storage)</div>
+                  <div class="detect-setpoint-pill" id="detect-out-duration-gain">
+                    🚀 <strong>+300% Extended Life</strong> vs ambient (4 days)
+                  </div>
+                </div>
+                <div class="detect-card-footer-alert">
+                  🛡️ <strong>Holding Strategy:</strong> Preserves commercial grade, preventing distress selling during transit roadblocks.
+                </div>
+              </div>
+
+              <!-- 2. CHAMBER TEMPERATURE OUTPUT -->
+              <div class="detect-metric-card card-temp">
+                <div>
+                  <div class="detect-card-header">
+                    <span class="detect-card-title">2. Chamber Temperature</span>
+                    <span class="detect-card-icon">🌡️</span>
+                  </div>
+                  <div class="detect-primary-val" id="detect-out-temp-range">10.0°C – 14.0°C</div>
+                  <div class="detect-sub-val">
+                    Optimal Thermostat Setpoint: <strong id="detect-out-temp-setpoint" style="color: #0284C7;">12.0°C</strong>
+                  </div>
+
+                  <!-- Visual Temperature Range Bar -->
+                  <div class="detect-visual-meter-box">
+                    <div class="detect-meter-track">
+                      <div class="detect-meter-fill" id="detect-temp-bar-fill" style="left: 50%; width: 20%;"></div>
+                      <div class="detect-meter-marker" id="detect-temp-marker" style="left: 60%;"></div>
+                    </div>
+                    <div class="detect-meter-labels">
+                      <span>0°C (Freeze)</span>
+                      <span>10°C (Cold Safe)</span>
+                      <span>20°C (Ambient)</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="detect-card-footer-alert" id="detect-out-temp-floor">
+                  ⚠️ Chilling Hazard Floor: 10.0°C (Do NOT freeze or overcool)
+                </div>
+              </div>
+
+              <!-- 3. CHAMBER HUMIDITY OUTPUT -->
+              <div class="detect-metric-card card-hum">
+                <div>
+                  <div class="detect-card-header">
+                    <span class="detect-card-title">3. Chamber Humidity</span>
+                    <span class="detect-card-icon">💧</span>
+                  </div>
+                  <div class="detect-primary-val" id="detect-out-hum-range">85% – 90% RH</div>
+                  <div class="detect-sub-val">
+                    Ultrasonic Humidifier Setpoint: <strong id="detect-out-hum-setpoint" style="color: #4338CA;">88% RH</strong>
+                  </div>
+
+                  <!-- Visual Humidity Range Bar -->
+                  <div class="detect-visual-meter-box">
+                    <div class="detect-meter-track">
+                      <div class="detect-meter-fill" id="detect-hum-bar-fill" style="left: 70%; width: 10%;"></div>
+                      <div class="detect-meter-marker" id="detect-hum-marker" style="left: 76%;"></div>
+                    </div>
+                    <div class="detect-meter-labels">
+                      <span>50% (Wilting)</span>
+                      <span>85%–90% Target</span>
+                      <span>100% (Mold Risk)</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="detect-card-footer-alert">
+                  🛡️ Transpiration Barrier: Retains moisture & firmness without surface condensation.
+                </div>
+              </div>
+            </div>
+
+            <!-- Multi-Phase Holding Timeline -->
+            <div class="detect-phases-box">
+              <div class="detect-phases-header">
+                <h4><span>📅</span> Multi-Phase Storage Freshness Progression</h4>
+                <span style="font-size: 0.78rem; font-weight: 700; color: #64748B;">Automated Degradation Model</span>
+              </div>
+              <div class="detect-phases-grid">
+                <div class="detect-phase-card p1">
+                  <div class="detect-phase-tag">Phase 1: Peak Quality</div>
+                  <div class="detect-phase-text" id="detect-phase-1">Days 1–8: Crisp pericarp & full aroma</div>
+                </div>
+                <div class="detect-phase-card p2">
+                  <div class="detect-phase-tag">Phase 2: Commercial Hold</div>
+                  <div class="detect-phase-text" id="detect-phase-2">Days 9–16: Prime market grade for aggregation</div>
+                </div>
+                <div class="detect-phase-card p3">
+                  <div class="detect-phase-tag">Phase 3: Priority Dispatch</div>
+                  <div class="detect-phase-text" id="detect-phase-3">Days 17–21: Immediate dispatch/processing</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Diagnostic Specs & NER Regional Advisory -->
+            <div class="detect-details-grid">
+              <div class="detect-detail-item">
+                <span class="detect-detail-label">🍃 Respiration Rate & Thermal Mass</span>
+                <span class="detect-detail-val" id="detect-out-respiration">Moderate (20–30 mg CO₂/kg·h)</span>
+                <span class="detect-detail-desc">Governs chamber ventilation duty and sensible heat removal load.</span>
+              </div>
+
+              <div class="detect-detail-item">
+                <span class="detect-detail-label">🧪 Ethylene Sensitivity Profile</span>
+                <span class="detect-detail-val" id="detect-out-ethylene">High Producer / Highly Sensitive</span>
+                <span class="detect-detail-desc">Determines compatible co-storage crops and ventilation purge cycles.</span>
+              </div>
+
+              <div class="detect-detail-item">
+                <span class="detect-detail-label">⚡ Estimated Solar DC Thermal Load</span>
+                <span class="detect-detail-val" id="detect-out-power">38W – 45W DC Load</span>
+                <span class="detect-detail-desc">Optimized for 12V DC brushless DC compressor powered by 200W PV.</span>
+              </div>
+
+              <div class="detect-detail-item">
+                <span class="detect-detail-label">❄️ Recommended Pre-Cooling Protocol</span>
+                <span class="detect-detail-val" id="detect-out-precool">Room Pre-cooling or Forced Air within 3h</span>
+                <span class="detect-detail-desc">Removes field heat rapidly to avoid thermal shocks in the main cold box.</span>
+              </div>
+
+              <div class="detect-detail-item" style="grid-column: 1 / -1; background: #F0F9FF; border-color: #BAE6FD;">
+                <span class="detect-detail-label" style="color: #0369A1;">💡 Crop Physiological Advisory</span>
+                <span class="detect-detail-val" id="detect-out-notes" style="color: #0C4A6E;">
+                  Sensitive to chilling injury below 10°C; do not overcool. Maintain moderate chill to preserve lycopene and skin elasticity.
+                </span>
+              </div>
+
+              <div class="detect-detail-item" style="grid-column: 1 / -1; background: #FFFBEB; border-color: #FDE68A;">
+                <span class="detect-detail-label" style="color: #B45309;">📍 North Eastern Region Operational Context</span>
+                <span class="detect-detail-val" id="detect-out-ner-notes" style="color: #78350F;">
+                  Critical perishability crop in Meghalaya & Assam hills. Vulnerable to rapid softening in humid transport.
+                </span>
+              </div>
+            </div>
+
+            <!-- Action Controls -->
+            <div class="detect-actions-row">
+              <button class="btn btn-secondary btn-sm" id="btn-copy-crop-recipe">
+                📋 Copy Storage Protocol Card
+              </button>
+              <a href="ai-insights.html" class="btn btn-secondary btn-sm" id="btn-jump-to-simulator">
+                🧠 Open in AI Freshness Simulator
+              </a>
+              <button class="btn btn-primary btn-sm" id="btn-sync-to-controller">
+                ⚡ Sync Setpoints to Live Controller
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- =========================================================================
+           FEATURE: MULTI-CROP CO-STORAGE OPTIMIZER (DYNAMIC CHAMBER BALANCER)
+           ========================================================================= -->
+      <div class="multicrop-optimizer-wrap" id="multi-crop-optimizer">
+        <div class="multicrop-header-card">
+          <div class="multicrop-header-left">
+            <div class="badge-tag gold">⚡ Dynamic Multi-Crop Balancer</div>
+            <h3 class="multicrop-title">Smart Fridge Mixed-Load Optimizer</h3>
+            <p class="multicrop-desc">
+              Need to store different crops in your FreshVault cold storage chamber at the same time? Select multiple crops to dynamically compute the safest compromise temperature, optimal humidity, chilling hazard floors, ethylene co-storage warnings, and limiting batch shelf life.
+            </p>
+          </div>
+          <div class="multicrop-header-actions">
+            <button class="btn btn-secondary btn-sm" id="btn-multicrop-clear">🗑️ Clear Fridge Load</button>
+            <button class="btn btn-outline btn-sm" id="btn-multicrop-select-all">➕ Select All</button>
+          </div>
+        </div>
+
+        <div class="multicrop-layout-grid">
+          <!-- LEFT COLUMN: Multi-Crop Picker & Presets -->
+          <div class="multicrop-picker-card">
+            <!-- Quick Load Presets -->
+            <div class="multicrop-presets-bar">
+              <span class="multicrop-preset-label">🎯 Quick Presets:</span>
+              <div class="multicrop-preset-chips-list">
+                <button type="button" class="multicrop-preset-chip active" data-preset="cabbage_tomato">🥬 Cabbage + 🍅 Tomato</button>
+                <button type="button" class="multicrop-preset-chip" data-preset="salad">🥗 Salad (Tomato + Cucumber + Greens)</button>
+                <button type="button" class="multicrop-preset-chip" data-preset="cole">🥦 Cole & Roots (Cabbage + Cauliflower + Carrot)</button>
+                <button type="button" class="multicrop-preset-chip" data-preset="ner_spices">🔥 NER Spices & Citrus (King Chilli + Ginger + Orange)</button>
+                <button type="button" class="multicrop-preset-chip" data-preset="roots">🥔 Mountain Roots (Potato + Carrot)</button>
+              </div>
+            </div>
+
+            <!-- Category Filter for Multi-Select -->
+            <div class="multicrop-filter-pills">
+              <button type="button" class="multicrop-filter-btn active" data-mfilter="all">All Crops (14)</button>
+              <button type="button" class="multicrop-filter-btn" data-mfilter="ner_special">⭐ NER Specials</button>
+              <button type="button" class="multicrop-filter-btn" data-mfilter="vegetables">Vegetables</button>
+              <button type="button" class="multicrop-filter-btn" data-mfilter="cole">Cole Crops</button>
+              <button type="button" class="multicrop-filter-btn" data-mfilter="roots">Roots & Tubers</button>
+              <button type="button" class="multicrop-filter-btn" data-mfilter="greens">Leafy Greens</button>
+              <button type="button" class="multicrop-filter-btn" data-mfilter="fruits">Fruits & Spices</button>
+            </div>
+
+            <!-- Multi-Crop Selection Grid -->
+            <div class="multicrop-items-grid" id="multicrop-items-grid">
+              <!-- Dynamically rendered checkbox cards for all crops by js/detection.js -->
+            </div>
+          </div>
+
+          <!-- RIGHT COLUMN: Dynamic Cold Storage Parameters & Chamber Output -->
+          <div class="multicrop-results-card">
+            <!-- Selected Chamber Tray / Cart Header -->
+            <div class="multicrop-tray-header">
+              <div class="multicrop-tray-title">
+                <span class="tray-fridge-icon">🧊</span>
+                <span>Active Fridge Chamber Load: <strong id="multicrop-count-label">2 crops selected</strong></span>
+              </div>
+              <span class="multicrop-status-badge" id="multicrop-compat-badge">Checking...</span>
+            </div>
+
+            <!-- Active Crop Pills -->
+            <div class="multicrop-selected-chips-wrap" id="multicrop-selected-chips">
+              <!-- Chips of currently added crops with (x) remove -->
+            </div>
+
+            <!-- Dynamic Microclimate Parameter Cards -->
+            <div class="multicrop-metrics-grid">
+              <!-- 1. DYNAMIC TEMPERATURE SETPOINT -->
+              <div class="multicrop-metric-card temp-theme" id="multicrop-temp-card">
+                <div class="multicrop-metric-top">
+                  <span class="multicrop-metric-label">1. Recommended Chamber Temp</span>
+                  <span class="multicrop-metric-icon">🌡️</span>
+                </div>
+                <div class="multicrop-metric-val" id="multicrop-target-temp">10.0°C</div>
+                <div class="multicrop-metric-sub" id="multicrop-temp-range-sub">Optimal Setpoint for Mixed Load</div>
+                
+                <!-- Meter / Scale -->
+                <div class="multicrop-meter-wrap">
+                  <div class="multicrop-meter-bar">
+                    <div class="multicrop-meter-fill temp" id="multicrop-temp-meter-fill" style="left: 0%; width: 50%;"></div>
+                    <div class="multicrop-meter-pointer" id="multicrop-temp-meter-pointer" style="left: 50%;"></div>
+                  </div>
+                  <div class="multicrop-meter-ticks">
+                    <span>0°C (Freeze)</span>
+                    <span id="multicrop-floor-tick">10.0°C (Chilling Floor)</span>
+                    <span>20°C (Ambient)</span>
+                  </div>
+                </div>
+
+                <div class="multicrop-metric-pill" id="multicrop-temp-pill">
+                  🛡️ Chilling Floor: Guarding sensitive crops
+                </div>
+              </div>
+
+              <!-- 2. DYNAMIC HUMIDITY SETPOINT -->
+              <div class="multicrop-metric-card hum-theme" id="multicrop-hum-card">
+                <div class="multicrop-metric-top">
+                  <span class="multicrop-metric-label">2. Recommended Chamber Humidity</span>
+                  <span class="multicrop-metric-icon">💧</span>
+                </div>
+                <div class="multicrop-metric-val" id="multicrop-target-hum">90% RH</div>
+                <div class="multicrop-metric-sub" id="multicrop-hum-range-sub">Optimal Safe Overlap: 88% – 92% RH</div>
+
+                <!-- Meter / Scale -->
+                <div class="multicrop-meter-wrap">
+                  <div class="multicrop-meter-bar">
+                    <div class="multicrop-meter-fill hum" id="multicrop-hum-meter-fill" style="left: 70%; width: 20%;"></div>
+                    <div class="multicrop-meter-pointer" id="multicrop-hum-meter-pointer" style="left: 80%;"></div>
+                  </div>
+                  <div class="multicrop-meter-ticks">
+                    <span>50% (Wilting)</span>
+                    <span>90% Target</span>
+                    <span>100% (Mold Risk)</span>
+                  </div>
+                </div>
+
+                <div class="multicrop-metric-pill" id="multicrop-hum-pill">
+                  💧 Transpiration Guard: Moisture retained
+                </div>
+              </div>
+
+              <!-- 3. BOTTLENECK SHELF LIFE -->
+              <div class="multicrop-metric-card life-theme" id="multicrop-life-card">
+                <div class="multicrop-metric-top">
+                  <span class="multicrop-metric-label">3. Batch Safe Holding Window</span>
+                  <span class="multicrop-metric-icon">⏱️</span>
+                </div>
+                <div class="multicrop-metric-val" id="multicrop-target-life">14 – 21 Days</div>
+                <div class="multicrop-metric-sub" id="multicrop-bottleneck-sub">⚠️ Limiting Bottleneck: Tomato (14-21 Days)</div>
+                <div class="multicrop-metric-pill" id="multicrop-life-pill">
+                  📦 First-in, First-out (FIFO) Dispatch
+                </div>
+              </div>
+
+              <!-- 4. COMBINED DC THERMAL & FAN LOAD -->
+              <div class="multicrop-metric-card power-theme" id="multicrop-power-card">
+                <div class="multicrop-metric-top">
+                  <span class="multicrop-metric-label">4. Solar DC Chamber Power Load</span>
+                  <span class="multicrop-metric-icon">⚡</span>
+                </div>
+                <div class="multicrop-metric-val" id="multicrop-target-power">42W – 50W</div>
+                <div class="multicrop-metric-sub" id="multicrop-power-sub">2 Crops Active Thermal Mass</div>
+                <div class="multicrop-metric-pill" id="multicrop-power-pill">
+                  ☀️ 100% PV Solar Matched (12V DC)
+                </div>
+              </div>
+            </div>
+
+            <!-- COMPATIBILITY & PHYSIOLOGICAL ANALYSIS ACCORDION / ADVISORY -->
+            <div class="multicrop-advisory-box" id="multicrop-advisory-box">
+              <div class="multicrop-advisory-header">
+                <h4><span>🧪</span> Physiological Diagnostics & Ethylene Co-Storage Analysis</h4>
+              </div>
+              <div class="multicrop-advisory-content" id="multicrop-advisory-content">
+                <!-- Dynamically generated physiological advisory & ethylene checks -->
+              </div>
+            </div>
+
+            <!-- INDIVIDUAL CROP HOLDING COMPARISON TABLE -->
+            <div class="multicrop-breakdown-box" id="multicrop-breakdown-box">
+              <div class="multicrop-breakdown-header">
+                <h4><span>📊</span> Mixed-Load Crop Physiological Comparison</h4>
+              </div>
+              <div class="multicrop-table-wrap">
+                <table class="multicrop-table" id="multicrop-table">
+                  <thead>
+                    <tr>
+                      <th>Crop</th>
+                      <th>Category</th>
+                      <th>Ideal Temp</th>
+                      <th>Chilling Floor</th>
+                      <th>Ideal RH</th>
+                      <th>Holding Life</th>
+                      <th>Ethylene Profile</th>
+                    </tr>
+                  </thead>
+                  <tbody id="multicrop-table-body">
+                    <!-- Dynamically populated rows -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- Action Controls -->
+            <div class="multicrop-actions-row">
+              <button type="button" class="btn btn-secondary btn-sm" id="btn-copy-multicrop-plan">
+                📋 Copy Multi-Crop Storage Protocol
+              </button>
+              <button type="button" class="btn btn-primary btn-sm" id="btn-sync-multicrop-to-controller">
+                ⚡ Apply Calculated Mixed Setpoints to Fridge Controller
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Site Footer -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand-col">
+          <div class="footer-brand">
+            <div class="brand-icon">❄️</div>
+            <span>FreshVault</span>
+            <span class="ner-pill">NER</span>
+          </div>
+          <p class="footer-tagline">
+            Solar-powered decentralized smart mini cold storage engineered for the unique agricultural topography, perishable crops, and off-grid realities of North Eastern India.
+          </p>
+          <div class="footer-badge">
+            Smart India Hackathon • Problem Statement #1736
+          </div>
+        </div>
+
+        <div class="footer-col">
+          <div class="footer-col-title">Navigation Hub</div>
+          <ul class="footer-links">
+            <li><a href="index.html">Home & Overview</a></li>
+            <li><a href="detection.html">Crop Detection Protocol</a></li>
+            <li><a href="dashboard.html">Live IoT Dashboard</a></li>
+            <li><a href="ai-insights.html">AI Freshness Insights</a></li>
+            <li><a href="vegetables.html">Crop Storage Profiles</a></li>
+            <li><a href="settings.html">Operator Settings</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <div class="footer-col-title">NER GI Heritage Crops</div>
+          <ul class="footer-links">
+            <li><a href="detection.html">King Chilli (Bhut Jolokia)</a></li>
+            <li><a href="detection.html">Karbi Anglong Fresh Ginger</a></li>
+            <li><a href="detection.html">Khasi Mandarin Orange</a></li>
+            <li><a href="detection.html">Tripura Queen Pineapple</a></li>
+            <li><a href="detection.html">Sikkim Cole & Greens</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <div class="footer-col-title">Engineering Architecture</div>
+          <ul class="footer-links">
+            <li><a href="index.html#hardware">BLDC Solar Compressor</a></li>
+            <li><a href="index.html#hardware">LiFePO4 Thermal Storage</a></li>
+            <li><a href="index.html#hardware">Dual GSM / LoRa Gateway</a></li>
+            <li><a href="index.html#hardware">High-Density PUF Insulation</a></li>
+            <li><a href="index.html#hardware">Ultrasonic Mist Generator</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <div>
+          © 2026 FreshVault NER — Smart India Hackathon Project. All rights reserved.
+        </div>
+        <div style="display: flex; gap: 16px;">
+          <span>Deep-Tech AgriTech Architecture</span>
+          <span>•</span>
+          <span>Decentralized Cold Chain</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Multi-Device Access Floating Button & QR Modal -->
+  <button class="floating-share-btn" id="open-share-modal-btn" aria-label="Open on phone / Share">
+    <span>📱</span>
+    <span>Open on Phone / QR</span>
+  </button>
+
+  <div class="share-modal-backdrop" id="share-modal">
+    <div class="share-modal-card">
+      <button class="share-modal-close" id="close-share-modal-btn" aria-label="Close modal">✕</button>
+      <div style="font-size: 2rem; margin-bottom: 8px;">📲</div>
+      <h3 style="color: #1F4E79; font-weight: 800; font-size: 1.25rem; margin-bottom: 6px;">Open on Mobile / Any Device</h3>
+      <p style="font-size: 0.84rem; color: #4B5563; line-height: 1.45;">
+        Scan this QR code with any phone or tablet on the same Wi-Fi network, or open the link directly in your mobile browser.
+      </p>
+
+      <div class="qr-box-container" id="qr-code-canvas"></div>
+
+      <div class="url-copy-box">
+        <input type="text" id="share-url-input" class="url-input-field" readonly value="http://192.168.1.9:8080">
+        <button class="btn btn-primary btn-sm" id="copy-url-btn">Copy</button>
+      </div>
+      <span id="copy-status-msg" style="display: block; font-size: 0.76rem; color: #10B981; font-weight: 600; margin-top: 6px; min-height: 16px;"></span>
+
+      <div style="margin-top: 16px; padding: 10px; background: #F8FAFC; border-radius: 8px; border: 1px solid #E2E8F0; font-size: 0.76rem; color: #64748B;">
+        💡 <strong>Tip for Judges & Teammates:</strong> Make sure devices are connected to the same Wi-Fi / Hotspot.
+      </div>
+    </div>
+  </div>
+
+  <!-- Application Scripts -->
+  <script src="js/detection.js"></script>
+  <script src="js/app.js"></script>
+
+</body>
+</html>

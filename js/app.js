@@ -1,5 +1,5 @@
 /* ==========================================================================
-   FreshVault NER - Main App Logic & Interactions (Streamlined)
+   FreshVault NER - Main App Logic & Interactions
    Solar-Powered Smart Mini Cold Storage for North Eastern Region
    ========================================================================== */
 
@@ -48,12 +48,11 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // 3. Sticky Navbar Active Link Highlighting on Scroll
+  // 3. Sticky Navbar & Active Page Link Highlighting
   const navLinks = document.querySelectorAll('.nav-link');
-  const sections = document.querySelectorAll('section[id]');
+  const navbar = document.querySelector('.navbar');
 
   window.addEventListener('scroll', () => {
-    const navbar = document.querySelector('.navbar');
     if (navbar) {
       if (window.scrollY > 40) {
         navbar.classList.add('scrolled');
@@ -61,22 +60,17 @@ document.addEventListener('DOMContentLoaded', () => {
         navbar.classList.remove('scrolled');
       }
     }
+  });
 
-    let currentSection = '';
-    sections.forEach(sec => {
-      const top = sec.offsetTop - 120;
-      const height = sec.offsetHeight;
-      if (window.scrollY >= top && window.scrollY < top + height) {
-        currentSection = sec.getAttribute('id');
-      }
-    });
-
-    navLinks.forEach(link => {
+  // Set active link based on current page URL pathname
+  const currentPath = window.location.pathname.split('/').pop() || 'index.html';
+  navLinks.forEach(link => {
+    const href = link.getAttribute('href');
+    if (href && (href === currentPath || (currentPath === '' && href === 'index.html'))) {
+      link.classList.add('active');
+    } else if (href && !href.startsWith('#') && href !== currentPath) {
       link.classList.remove('active');
-      if (link.getAttribute('href') === `#${currentSection}`) {
-        link.classList.add('active');
-      }
-    });
+    }
   });
 
   // 4. Mobile Menu Toggle
