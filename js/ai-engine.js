@@ -4,106 +4,117 @@
    ========================================================================== */
 
 const CROP_DATABASE = {
+
   tomato: {
     name: 'Tomato',
-    optimalTemp: [10, 14],
-    optimalHum: [85, 90],
-    maxHoursNominal: 360, // 15 days
+    optimalTemp: [12.5, 15],
+    optimalHum: [90, 95],
+    maxHoursNominal: 336, // ~14 days
     chillingLimit: 10,
     gasSensitivity: 1.4,
     icon: '🍅',
-    notes: 'Sensitive to chilling injury below 10°C; do not overcool.'
+    notes: 'Mature-green tomatoes are best stored at 12.5–15°C; avoid temperatures below 10°C.'
   },
+
   potato: {
     name: 'Potato',
-    optimalTemp: [8, 12],
-    optimalHum: [85, 90],
-    maxHoursNominal: 1440, // 60 days
+    optimalTemp: [7, 7],
+    optimalHum: [98, 98],
+    maxHoursNominal: 840, // 3–5 weeks
     chillingLimit: 5,
     gasSensitivity: 0.8,
     icon: '🥔',
-    notes: 'Avoid exposure below 4°C to prevent cold-induced sweetening.'
+    notes: 'Table potatoes are best stored around 7°C with high humidity; avoid temperatures below 4°C to prevent cold-induced sweetening.'
   },
+
   cabbage: {
     name: 'Cabbage',
-    optimalTemp: [1, 5],
-    optimalHum: [90, 95],
-    maxHoursNominal: 720, // 30 days
+    optimalTemp: [0, 0],
+    optimalHum: [95, 100],
+    maxHoursNominal: 6480, // ~9 months, upper end of 3–6 months range
     chillingLimit: 0,
     gasSensitivity: 1.1,
     icon: '🥬',
-    notes: 'Maintains crispness best at near-zero temperatures with high RH.'
+    notes: 'Best stored near 0°C with relative humidity above 95% to maintain crispness and quality.'
   },
+
   cauliflower: {
     name: 'Cauliflower',
-    optimalTemp: [1, 4],
-    optimalHum: [90, 95],
-    maxHoursNominal: 360,
+    optimalTemp: [0, 0],
+    optimalHum: [90, 98],
+    maxHoursNominal: 504, // ~3 weeks
     chillingLimit: 0,
     gasSensitivity: 1.2,
     icon: '🥦',
-    notes: 'Curd browning risk if relative humidity drops below 85%.'
+    notes: 'Best stored near 0°C with high humidity; maintain 90–98% RH to reduce quality loss and browning.'
   },
+
   carrot: {
     name: 'Carrot',
-    optimalTemp: [1, 4],
-    optimalHum: [95, 98],
-    maxHoursNominal: 840,
+    optimalTemp: [0, 0],
+    optimalHum: [90, 95],
+    maxHoursNominal: 3600, // ~5 months
     chillingLimit: 0,
     gasSensitivity: 0.9,
     icon: '🥕',
-    notes: 'Requires near-saturation humidity to prevent root shriveling.'
+    notes: 'Best stored near 0°C with 90–95% relative humidity to prevent moisture loss and shriveling.'
   },
+
   green_beans: {
     name: 'Green Beans',
-    optimalTemp: [5, 8],
-    optimalHum: [90, 95],
-    maxHoursNominal: 216,
+    optimalTemp: [5, 7.5],
+    optimalHum: [95, 100],
+    maxHoursNominal: 288, // ~12 days
     chillingLimit: 5,
     gasSensitivity: 1.3,
-    icon: '🫘',
-    notes: 'Pitting and russeting occur rapidly if stored below 5°C.'
+    icon: '🫛',
+    notes: 'Store at 5–7.5°C with very high humidity; temperatures below 5°C can cause chilling injury.'
   },
+
   leafy_greens: {
     name: 'Leafy Greens',
     optimalTemp: [0, 2],
-    optimalHum: [95, 98],
-    maxHoursNominal: 120, // 5 days
+    optimalHum: [95, 100],
+    maxHoursNominal: 336, // ~14 days
     chillingLimit: 0,
     gasSensitivity: 1.6,
-    icon: '🥗',
-    notes: 'Very high surface area to volume ratio; highest urgency crop.'
+    icon: '🌿',
+    notes: 'Require very low temperature and high humidity to maintain freshness and prevent wilting.'
   },
+
   cucumber: {
     name: 'Cucumber',
-    optimalTemp: [10, 13],
-    optimalHum: [90, 95],
-    maxHoursNominal: 240,
+    optimalTemp: [10, 12.5],
+    optimalHum: [95, 95],
+    maxHoursNominal: 336, // ~14 days
     chillingLimit: 10,
     gasSensitivity: 1.5,
     icon: '🥒',
-    notes: 'Watery breakdown occurs if exposed to standard refrigerator temps.'
+    notes: 'Best stored at 10–12.5°C with approximately 95% RH; avoid standard refrigerator temperatures.'
   },
+
   capsicum: {
     name: 'Capsicum',
     optimalTemp: [7, 10],
     optimalHum: [90, 95],
-    maxHoursNominal: 336,
+    maxHoursNominal: 504, // ~3 weeks
     chillingLimit: 7,
     gasSensitivity: 1.2,
     icon: '🫑',
-    notes: 'Moderate temperature requirement; vulnerable to calyx decay.'
+    notes: 'Best stored at 7–10°C with 90–95% relative humidity to maintain quality and reduce calyx decay.'
   },
+
   chilli: {
-    name: 'Chilli',
-    optimalTemp: [8, 12],
-    optimalHum: [85, 90],
-    maxHoursNominal: 360,
+    name: 'Green Chilli',
+    optimalTemp: [7, 10],
+    optimalHum: [90, 95],
+    maxHoursNominal: 504, // ~3 weeks
     chillingLimit: 7,
     gasSensitivity: 1.1,
     icon: '🌶️',
-    notes: 'Good storage resilience; watch for pod softening.'
+    notes: 'Best stored at 7–10°C with 90–95% relative humidity; monitor for pod softening.'
   }
+
 };
 
 class FreshVaultAIEngine {
