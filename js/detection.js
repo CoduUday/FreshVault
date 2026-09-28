@@ -440,6 +440,7 @@ class FreshVaultCropDetection {
     this.renderCropGrid();
     this.bindEvents();
     this.selectCrop(this.selectedCropId);
+    this.initMultiCropOptimizer();
   }
 
   bindEvents() {
@@ -757,6 +758,526 @@ FreshVault NER — Solar-Powered Decentralized Agri Cold Chain`;
     }
   }
 
+  /* =========================================================================
+     MULTI-CROP CO-STORAGE OPTIMIZER METHODS
+     ========================================================================= */
+  initMultiCropOptimizer() {
+    this.selectedMultiCrops = new Set(['cabbage', 'tomato']);
+    this.multiCropFilterCategory = 'all';
+
+    this.bindMultiCropEvents();
+    this.renderMultiCropGrid();
+    this.updateMultiCropOptimizer();
+  }
+
+  bindMultiCropEvents() {
+    // Multi-Crop Filter buttons
+    const filterBtns = document.querySelectorAll('.multicrop-filter-btn');
+    filterBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        filterBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        this.multiCropFilterCategory = btn.getAttribute('data-mfilter') || 'all';
+        this.renderMultiCropGrid();
+      });
+    });
+
+    // Preset buttons
+    const presetBtns = document.querySelectorAll('.multicrop-preset-chip');
+    presetBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        presetBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const presetKey = btn.getAttribute('data-preset');
+        this.applyMultiCropPreset(presetKey);
+      });
+    });
+
+    // Clear load button
+    const clearBtn = document.getElementById('btn-multicrop-clear');
+    if (clearBtn) {
+      clearBtn.addEventListener('click', () => {
+        this.selectedMultiCrops.clear();
+        document.querySelectorAll('.multicrop-preset-chip').forEach(b => b.classList.remove('active'));
+        this.renderMultiCropGrid();
+        this.updateMultiCropOptimizer();
+        this.showToast('🗑️ Mixed-load fridge chamber cleared.');
+      });
+    }
+
+    // Select all button
+    const selectAllBtn = document.getElementById('btn-multicrop-select-all');
+    if (selectAllBtn) {
+      selectAllBtn.addEventListener('click', () => {
+        Object.keys(CROP_DETECTION_REGISTRY).forEach(id => this.selectedMultiCrops.add(id));
+        document.querySelectorAll('.multicrop-preset-chip').forEach(b => b.classList.remove('active'));
+        this.renderMultiCropGrid();
+        this.updateMultiCropOptimizer();
+        this.showToast('➕ Added all 14 crops to fridge chamber analysis.');
+      });
+    }
+
+    // Action button: Sync Mixed Setpoints to Controller
+    const syncMultiBtn = document.getElementById('btn-sync-multicrop-to-controller');
+    if (syncMultiBtn) {
+      syncMultiBtn.addEventListener('click', () => {
+        this.syncMultiCropToController();
+      });
+    }
+
+    // Action button: Copy Multi-Crop Plan
+    const copyMultiBtn = document.getElementById('btn-copy-multicrop-plan');
+    if (copyMultiBtn) {
+      copyMultiBtn.addEventListener('click', () => {
+        this.copyMultiCropPlan();
+      });
+    }
+  }
+
+  applyMultiCropPreset(presetKey) {
+    const presets = {
+      'cabbage_tomato': ['cabbage', 'tomato'],
+      'salad': ['tomato', 'cucumber', 'leafy_greens'],
+      'cole': ['cabbage', 'cauliflower', 'carrot'],
+      'ner_spices': ['king_chilli', 'ginger', 'khasi_mandarin'],
+      'roots': ['potato', 'carrot']
+    };
+
+    if (presets[presetKey]) {
+      this.selectedMultiCrops = new Set(presets[presetKey]);
+      this.renderMultiCropGrid();
+      this.updateMultiCropOptimizer();
+    }
+  }
+
+  renderMultiCropGrid() {
+    const gridEl = document.getElementById('multicrop-items-grid');
+    if (!gridEl) return;
+
+    const crops = Object.values(CROP_DETECTION_REGISTRY);
+    const filtered = crops.filter(crop => {
+      if (this.multiCropFilterCategory === 'all') return true;
+      if (this.multiCropFilterCategory === 'ner_special') return crop.isNerSpecial;
+      return crop.category === this.multiCropFilterCategory;
+    });
+
+    gridEl.innerHTML = '';
+
+    filtered.forEach(crop => {
+      const isSelected = this.selectedMultiCrops.has(crop.id);
+      const card = document.createElement('div');
+      card.className = `multicrop-item-card ${isSelected ? 'selected' : ''}`;
+      card.setAttribute('data-crop-id', crop.id);
+
+      card.innerHTML = `
+        <div class="multicrop-item-checkbox"></div>
+        <div class="multicrop-item-icon">${crop.icon}</div>
+        <div class="multicrop-item-info">
+          <div class="multicrop-item-name">${crop.name}</div>
+          <div class="multicrop-item-meta">
+            <span class="multicrop-item-tag">${crop.tempMin}°–${crop.tempMax}°C</span>
+            <span class="multicrop-item-tag">${crop.humMin}%–${crop.humMax}% RH</span>
+          </div>
+        </div>
+      `;
+
+      card.addEventListener('click', () => {
+        this.toggleMultiCrop(crop.id);
+      });
+
+      gridEl.appendChild(card);
+    });
+  }
+
+  toggleMultiCrop(cropId) {
+    if (this.selectedMultiCrops.has(cropId)) {
+      this.selectedMultiCrops.delete(cropId);
+    } else {
+      this.selectedMultiCrops.add(cropId);
+    }
+
+    // Uncheck preset button highlights if custom selection
+    document.querySelectorAll('.multicrop-preset-chip').forEach(b => b.classList.remove('active'));
+
+    this.renderMultiCropGrid();
+    this.updateMultiCropOptimizer();
+  }
+
+  removeMultiCrop(cropId) {
+    this.selectedMultiCrops.delete(cropId);
+    document.querySelectorAll('.multicrop-preset-chip').forEach(b => b.classList.remove('active'));
+    this.renderMultiCropGrid();
+    this.updateMultiCropOptimizer();
+  }
+
+  updateMultiCropOptimizer() {
+    const crops = Array.from(this.selectedMultiCrops).map(id => CROP_DETECTION_REGISTRY[id]).filter(Boolean);
+    const countLabel = document.getElementById('multicrop-count-label');
+    const chipsContainer = document.getElementById('multicrop-selected-chips');
+    const badgeEl = document.getElementById('multicrop-compat-badge');
+    const tableBody = document.getElementById('multicrop-table-body');
+    const breakdownBox = document.getElementById('multicrop-breakdown-box');
+    const advisoryContent = document.getElementById('multicrop-advisory-content');
+
+    if (countLabel) {
+      countLabel.textContent = `${crops.length} crop${crops.length === 1 ? '' : 's'} selected`;
+    }
+
+    // Render active chips
+    if (chipsContainer) {
+      if (crops.length === 0) {
+        chipsContainer.innerHTML = `<div class="multicrop-empty-state"><span>👈 Select crops from the left to calculate optimal multi-crop storage microclimate.</span></div>`;
+      } else {
+        chipsContainer.innerHTML = '';
+        crops.forEach(crop => {
+          const chip = document.createElement('div');
+          chip.className = 'multicrop-chip';
+          chip.innerHTML = `
+            <span>${crop.icon}</span>
+            <span>${crop.name}</span>
+            <span class="multicrop-chip-remove" title="Remove ${crop.name}">×</span>
+          `;
+          chip.querySelector('.multicrop-chip-remove').addEventListener('click', (e) => {
+            e.stopPropagation();
+            this.removeMultiCrop(crop.id);
+          });
+          chipsContainer.appendChild(chip);
+        });
+      }
+    }
+
+    // Empty state reset
+    if (crops.length === 0) {
+      if (badgeEl) {
+        badgeEl.className = 'multicrop-status-badge';
+        badgeEl.textContent = 'Empty Fridge Load';
+      }
+      this.setMultiCropMetricDefaults();
+      if (advisoryContent) {
+        advisoryContent.innerHTML = `<p class="multicrop-empty-state">No crops currently in the fridge load. Select crops on the left to begin.</p>`;
+      }
+      if (breakdownBox) breakdownBox.style.display = 'none';
+      return;
+    }
+
+    if (breakdownBox) breakdownBox.style.display = 'block';
+
+    // 1. Compute Temperature Microclimate
+    const maxTempMin = Math.max(...crops.map(c => c.tempMin));
+    const minTempMax = Math.min(...crops.map(c => c.tempMax));
+    const maxChillingFloor = Math.max(...crops.map(c => c.chillingFloor));
+    const chillingSensitiveCrops = crops.filter(c => c.chillingFloor >= 7.0);
+
+    let optimalTemp = 0;
+    let tempStatus = 'green';
+    let tempSubtext = '';
+    let tempPill = '';
+    let isDirectOverlap = maxTempMin <= minTempMax;
+
+    if (isDirectOverlap) {
+      optimalTemp = parseFloat(((maxTempMin + minTempMax) / 2).toFixed(1));
+      tempSubtext = `Safe Overlap Range: ${maxTempMin.toFixed(1)}°C – ${minTempMax.toFixed(1)}°C`;
+      tempPill = `🛡️ Full Overlap: Perfect thermal match`;
+    } else {
+      // Prioritize protecting chilling-sensitive crops (chilling floor) to prevent tissue rot
+      optimalTemp = parseFloat(Math.max(maxChillingFloor, maxTempMin).toFixed(1));
+      tempStatus = 'yellow';
+      tempSubtext = `Compromise Setpoint (Elevated for Chilling-Sensitive Crops)`;
+      const sensitiveNames = chillingSensitiveCrops.map(c => c.name).join(', ');
+      tempPill = `🛡️ Chilling Guard: Set to ${optimalTemp}°C to protect ${sensitiveNames || 'sensitive crops'}`;
+    }
+
+    const tempValEl = document.getElementById('multicrop-target-temp');
+    const tempSubEl = document.getElementById('multicrop-temp-range-sub');
+    const tempPillEl = document.getElementById('multicrop-temp-pill');
+    const tempMeterFill = document.getElementById('multicrop-temp-meter-fill');
+    const tempMeterPointer = document.getElementById('multicrop-temp-meter-pointer');
+    const floorTickEl = document.getElementById('multicrop-floor-tick');
+
+    if (tempValEl) tempValEl.textContent = `${optimalTemp.toFixed(1)}°C`;
+    if (tempSubEl) tempSubEl.textContent = tempSubtext;
+    if (tempPillEl) tempPillEl.textContent = tempPill;
+    if (floorTickEl) floorTickEl.textContent = `${maxChillingFloor.toFixed(1)}°C (Chilling Floor)`;
+
+    // Position temperature meter (0°C to 20°C scale)
+    if (tempMeterFill && tempMeterPointer) {
+      const minScale = isDirectOverlap ? (maxTempMin / 20) * 100 : (maxChillingFloor / 20) * 100;
+      const maxScale = isDirectOverlap ? (minTempMax / 20) * 100 : (optimalTemp / 20) * 100 + 10;
+      const pointerScale = Math.max(0, Math.min(100, (optimalTemp / 20) * 100));
+      tempMeterFill.style.left = `${Math.max(0, minScale)}%`;
+      tempMeterFill.style.width = `${Math.max(10, maxScale - minScale)}%`;
+      tempMeterPointer.style.left = `${pointerScale}%`;
+    }
+
+    // 2. Compute Humidity Microclimate
+    const maxHumMin = Math.max(...crops.map(c => c.humMin));
+    const minHumMax = Math.min(...crops.map(c => c.humMax));
+    let optimalHum = Math.round(crops.reduce((acc, c) => acc + c.humSetpoint, 0) / crops.length);
+    let humSubtext = '';
+
+    if (maxHumMin <= minHumMax) {
+      humSubtext = `Optimal Safe Overlap: ${maxHumMin}% – ${minHumMax}% RH`;
+      optimalHum = Math.round((maxHumMin + minHumMax) / 2);
+    } else {
+      optimalHum = Math.min(95, Math.max(88, maxHumMin));
+      humSubtext = `Balanced Target for Transpiration Retention`;
+    }
+
+    const humValEl = document.getElementById('multicrop-target-hum');
+    const humSubEl = document.getElementById('multicrop-hum-range-sub');
+    const humMeterFill = document.getElementById('multicrop-hum-meter-fill');
+    const humMeterPointer = document.getElementById('multicrop-hum-meter-pointer');
+
+    if (humValEl) humValEl.textContent = `${optimalHum}% RH`;
+    if (humSubEl) humSubEl.textContent = humSubtext;
+
+    // Position humidity meter (50% to 100% scale)
+    if (humMeterFill && humMeterPointer) {
+      const humMinScale = Math.max(0, ((maxHumMin - 50) / 50) * 100);
+      const humMaxScale = Math.min(100, ((minHumMax - 50) / 50) * 100);
+      const humPointerScale = Math.max(0, Math.min(100, ((optimalHum - 50) / 50) * 100));
+      humMeterFill.style.left = `${Math.max(0, Math.min(80, humMinScale))}%`;
+      humMeterFill.style.width = `${Math.max(12, humMaxScale - humMinScale || 15)}%`;
+      humMeterPointer.style.left = `${humPointerScale}%`;
+    }
+
+    // 3. Compute Limiting Bottleneck Shelf Life
+    const sortedByLife = [...crops].sort((a, b) => a.durationDays[0] - b.durationDays[0]);
+    const bottleneckCrop = sortedByLife[0];
+    const minDays = bottleneckCrop.durationDays[0];
+    const maxDays = bottleneckCrop.durationDays[1];
+
+    const lifeValEl = document.getElementById('multicrop-target-life');
+    const lifeSubEl = document.getElementById('multicrop-bottleneck-sub');
+    const lifePillEl = document.getElementById('multicrop-life-pill');
+
+    if (lifeValEl) lifeValEl.textContent = `${minDays} – ${maxDays} Days`;
+    if (lifeSubEl) {
+      lifeSubEl.innerHTML = `⚠️ Limiting Bottleneck: <strong>${bottleneckCrop.name} (${minDays}–${maxDays} Days)</strong>`;
+    }
+    if (lifePillEl) {
+      lifePillEl.textContent = `📦 FIFO: Dispatch ${bottleneckCrop.name} first`;
+    }
+
+    // 4. Combined Solar DC Power Load Estimation
+    const baseWatts = 28;
+    const addedWatts = Math.min(32, (crops.length - 1) * 5);
+    const estPowerMin = baseWatts + addedWatts;
+    const estPowerMax = estPowerMin + 8;
+
+    const powerValEl = document.getElementById('multicrop-target-power');
+    const powerSubEl = document.getElementById('multicrop-power-sub');
+
+    if (powerValEl) powerValEl.textContent = `${estPowerMin}W – ${estPowerMax}W`;
+    if (powerSubEl) powerSubEl.textContent = `${crops.length} Crop${crops.length === 1 ? '' : 's'} Active Thermal Mass`;
+
+    // 5. Ethylene & Physiological Diagnostics Engine
+    const highEthyleneProducers = crops.filter(c => 
+      c.id === 'tomato' || c.id === 'khasi_mandarin' || c.id === 'pineapple'
+    );
+    const ethyleneSensitiveCrops = crops.filter(c => 
+      c.id === 'cabbage' || c.id === 'leafy_greens' || c.id === 'carrot' || c.id === 'cucumber' || c.id === 'cauliflower'
+    );
+    const pungentCrops = crops.filter(c => c.id === 'king_chilli' || c.id === 'ginger');
+
+    let advisoryCards = [];
+
+    // Temperature Compatibility Diagnostic
+    if (isDirectOverlap) {
+      advisoryCards.push(`
+        <div class="advisory-item-card success">
+          <span class="advisory-item-icon">✅</span>
+          <div>
+            <strong>100% Thermal Harmony:</strong> All selected crops share a safe temperature band (${maxTempMin.toFixed(1)}°C to ${minTempMax.toFixed(1)}°C). Set chamber thermostat to <strong>${optimalTemp.toFixed(1)}°C</strong> for maximum shelf life.
+          </div>
+        </div>
+      `);
+    } else {
+      const coldTolerant = crops.filter(c => c.tempMin <= 4.0);
+      advisoryCards.push(`
+        <div class="advisory-item-card warning">
+          <span class="advisory-item-icon">⚠️</span>
+          <div>
+            <strong>Thermal Compromise Mode:</strong> Cold-tolerant crops (${coldTolerant.map(c => c.name).join(', ')}) prefer 0–4°C, but chilling-sensitive crops (${chillingSensitiveCrops.map(c => c.name).join(', ')}) suffer irreversible tissue breakdown below ${maxChillingFloor.toFixed(1)}°C.
+            <br><em>FreshVault Strategy: Chamber temperature is safely elevated to <strong>${optimalTemp.toFixed(1)}°C</strong> to safeguard all crops from chilling injury.</em>
+          </div>
+        </div>
+      `);
+    }
+
+    // Ethylene Gas Interaction Diagnostic
+    if (highEthyleneProducers.length > 0 && ethyleneSensitiveCrops.length > 0) {
+      tempStatus = 'yellow';
+      advisoryCards.push(`
+        <div class="advisory-item-card danger">
+          <span class="advisory-item-icon">🧪</span>
+          <div>
+            <strong>Ethylene Gas Conflict Warning:</strong> <strong>${highEthyleneProducers.map(c => c.name).join(', ')}</strong> emit high ethylene gas, which accelerates rapid yellowing and quality loss in <strong>${ethyleneSensitiveCrops.map(c => c.name).join(', ')}</strong>.
+            <br><em>Operational Action: Enable Continuous Chamber Ventilation Fan in Settings, or store greens in perforated poly-liners.</em>
+          </div>
+        </div>
+      `);
+    }
+
+    // Aroma Transfer Diagnostic
+    if (pungentCrops.length > 0 && (crops.some(c => c.category === 'greens') || crops.some(c => c.category === 'fruits'))) {
+      advisoryCards.push(`
+        <div class="advisory-item-card info">
+          <span class="advisory-item-icon">👃</span>
+          <div>
+            <strong>Aroma Isolation Advisory:</strong> ${pungentCrops.map(c => c.name).join(' & ')} release potent volatile capsaicin / gingerol oils. Store in separate sealed crates to prevent cross-odor absorption into delicate leafy greens or fruits.
+          </div>
+        </div>
+      `);
+    }
+
+    // Shelf Placement Recommendation
+    advisoryCards.push(`
+      <div class="advisory-item-card info">
+        <span class="advisory-item-icon">📍</span>
+        <div>
+          <strong>Chamber Shelf Stacking Guide:</strong> Place highest hydration crops (${crops.filter(c => c.humMin >= 95).map(c => c.name).join(', ') || 'Leafy Greens'}) on upper shelves near humidifier mist; place root tubers and spices in lower ventilated trays.
+        </div>
+      </div>
+    `);
+
+    if (advisoryContent) {
+      advisoryContent.innerHTML = advisoryCards.join('');
+    }
+
+    // Update Status Badge
+    if (badgeEl) {
+      badgeEl.className = 'multicrop-status-badge';
+      if (highEthyleneProducers.length > 0 && ethyleneSensitiveCrops.length > 0) {
+        badgeEl.classList.add('status-yellow');
+        badgeEl.textContent = '🟡 Ethylene Caution (Ventilation Active)';
+      } else if (isDirectOverlap) {
+        badgeEl.classList.add('status-green');
+        badgeEl.textContent = '🟢 100% Thermal & Gas Harmony';
+      } else {
+        badgeEl.classList.add('status-yellow');
+        badgeEl.textContent = '🟡 Safe Compromise Mode';
+      }
+    }
+
+    // Populate Comparison Table
+    if (tableBody) {
+      tableBody.innerHTML = '';
+      crops.forEach(c => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>
+            <div class="crop-name-cell">
+              <span>${c.icon}</span>
+              <span>${c.name}</span>
+            </div>
+          </td>
+          <td><span class="tag-pill">${c.categoryLabel}</span></td>
+          <td><strong>${c.tempMin}°C – ${c.tempMax}°C</strong></td>
+          <td><span style="color: ${c.chillingFloor >= 7 ? '#B45309' : '#059669'}; font-weight: 700;">${c.chillingFloor}°C</span></td>
+          <td>${c.humMin}% – ${c.humMax}% RH</td>
+          <td><strong>${c.durationDays[0]}–${c.durationDays[1]} Days</strong></td>
+          <td><span class="tag-pill">${c.ethyleneClass.split('/')[0]}</span></td>
+        `;
+        tableBody.appendChild(row);
+      });
+    }
+
+    // Store computed values on instance for controller sync
+    this.currentMultiCropCalculation = {
+      crops,
+      optimalTemp,
+      optimalHum,
+      minDays,
+      maxDays,
+      estPowerMin,
+      estPowerMax,
+      bottleneckCrop
+    };
+  }
+
+  setMultiCropMetricDefaults() {
+    const tempValEl = document.getElementById('multicrop-target-temp');
+    const humValEl = document.getElementById('multicrop-target-hum');
+    const lifeValEl = document.getElementById('multicrop-target-life');
+    const powerValEl = document.getElementById('multicrop-target-power');
+
+    if (tempValEl) tempValEl.textContent = '-- °C';
+    if (humValEl) humValEl.textContent = '-- % RH';
+    if (lifeValEl) lifeValEl.textContent = '-- Days';
+    if (powerValEl) powerValEl.textContent = '-- W';
+  }
+
+  syncMultiCropToController() {
+    if (!this.currentMultiCropCalculation || this.currentMultiCropCalculation.crops.length === 0) {
+      this.showToast('⚠️ Please select at least one crop before syncing.');
+      return;
+    }
+
+    const { crops, optimalTemp, optimalHum, minDays, maxDays, estPowerMin, estPowerMax } = this.currentMultiCropCalculation;
+
+    const compositeCrop = {
+      id: 'mixed_load',
+      name: `Mixed Load (${crops.length} Crops)`,
+      icon: '🧊',
+      scientific: crops.map(c => c.name).join(' + '),
+      tempSetpoint: optimalTemp,
+      tempMin: Math.min(...crops.map(c => c.tempMin)),
+      tempMax: Math.max(...crops.map(c => c.tempMax)),
+      humSetpoint: optimalHum,
+      humMin: Math.min(...crops.map(c => c.humMin)),
+      humMax: Math.max(...crops.map(c => c.humMax)),
+      durationDays: [minDays, maxDays],
+      powerDutyEst: `${estPowerMin}W – ${estPowerMax}W DC Load`
+    };
+
+    if (window.FreshVaultDash) {
+      window.FreshVaultDash.setCrop(compositeCrop);
+    }
+
+    this.showToast(`✅ Mixed Fridge Setpoints Synchronized! (Temp: ${optimalTemp}°C | Humidity: ${optimalHum}% RH)`);
+
+    // Smooth scroll to Live Monitoring Dashboard
+    const dashSection = document.getElementById('dashboard');
+    if (dashSection) {
+      setTimeout(() => {
+        dashSection.scrollIntoView({ behavior: 'smooth' });
+      }, 400);
+    }
+  }
+
+  copyMultiCropPlan() {
+    if (!this.currentMultiCropCalculation || this.currentMultiCropCalculation.crops.length === 0) {
+      this.showToast('⚠️ Please select crops to copy storage protocol.');
+      return;
+    }
+
+    const { crops, optimalTemp, optimalHum, minDays, maxDays, bottleneckCrop } = this.currentMultiCropCalculation;
+
+    const protocolText = `FreshVault NER — Multi-Crop Mixed Cold Storage Protocol:
+======================================================================
+Active Crops (${crops.length}): ${crops.map(c => `${c.icon} ${c.name}`).join(', ')}
+🌡️ Recommended Chamber Temperature: ${optimalTemp}°C
+💧 Target Relative Humidity: ${optimalHum}% RH
+⏱️ Limiting Batch Shelf Life: ${minDays} – ${maxDays} Days (Bottleneck: ${bottleneckCrop.name})
+⚡ DC Compressor Thermal Load: ${this.currentMultiCropCalculation.estPowerMin}W – ${this.currentMultiCropCalculation.estPowerMax}W
+======================================================================
+Individual Crop Profiles:
+${crops.map(c => `- ${c.name}: Ideal ${c.tempMin}°-${c.tempMax}°C, Chilling Floor ${c.chillingFloor}°C, RH ${c.humMin}%-${c.humMax}%, Safe Hold ${c.durationDays[0]}-${c.durationDays[1]}d`).join('\n')}
+======================================================================
+FreshVault NER — Solar-Powered Decentralized Smart Agri Cold Chain`;
+
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(protocolText).then(() => {
+        this.showToast(`📋 Mixed-load storage protocol copied to clipboard!`);
+      }).catch(() => {
+        this.fallbackCopy(protocolText);
+      });
+    } else {
+      this.fallbackCopy(protocolText);
+    }
+  }
+
   fallbackCopy(text) {
     const textArea = document.createElement('textarea');
     textArea.value = text;
@@ -764,7 +1285,7 @@ FreshVault NER — Solar-Powered Decentralized Agri Cold Chain`;
     textArea.select();
     try {
       document.execCommand('copy');
-      this.showToast(`📋 Protocol for ${this.selectedCropId} copied to clipboard!`);
+      this.showToast(`📋 Storage protocol copied to clipboard!`);
     } catch (err) {
       console.warn('Unable to copy', err);
     }

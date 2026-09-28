@@ -387,8 +387,206 @@
           </div>
         </div>
       </div>
+
+      <!-- =========================================================================
+           FEATURE: MULTI-CROP CO-STORAGE OPTIMIZER (DYNAMIC CHAMBER BALANCER)
+           ========================================================================= -->
+      <div class="multicrop-optimizer-wrap" id="multi-crop-optimizer">
+        <div class="multicrop-header-card">
+          <div class="multicrop-header-left">
+            <div class="badge-tag gold">⚡ Dynamic Multi-Crop Balancer</div>
+            <h3 class="multicrop-title">Smart Fridge Mixed-Load Optimizer</h3>
+            <p class="multicrop-desc">
+              Need to store different crops in your FreshVault cold storage chamber at the same time? Select multiple crops to dynamically compute the safest compromise temperature, optimal humidity, chilling hazard floors, ethylene co-storage warnings, and limiting batch shelf life.
+            </p>
+          </div>
+          <div class="multicrop-header-actions">
+            <button class="btn btn-secondary btn-sm" id="btn-multicrop-clear">🗑️ Clear Fridge Load</button>
+            <button class="btn btn-outline btn-sm" id="btn-multicrop-select-all">➕ Select All</button>
+          </div>
+        </div>
+
+        <div class="multicrop-layout-grid">
+          <!-- LEFT COLUMN: Multi-Crop Picker & Presets -->
+          <div class="multicrop-picker-card">
+            <!-- Quick Load Presets -->
+            <div class="multicrop-presets-bar">
+              <span class="multicrop-preset-label">🎯 Quick Presets:</span>
+              <div class="multicrop-preset-chips-list">
+                <button type="button" class="multicrop-preset-chip active" data-preset="cabbage_tomato">🥬 Cabbage + 🍅 Tomato</button>
+                <button type="button" class="multicrop-preset-chip" data-preset="salad">🥗 Salad (Tomato + Cucumber + Greens)</button>
+                <button type="button" class="multicrop-preset-chip" data-preset="cole">🥦 Cole & Roots (Cabbage + Cauliflower + Carrot)</button>
+                <button type="button" class="multicrop-preset-chip" data-preset="ner_spices">🔥 NER Spices & Citrus (King Chilli + Ginger + Orange)</button>
+                <button type="button" class="multicrop-preset-chip" data-preset="roots">🥔 Mountain Roots (Potato + Carrot)</button>
+              </div>
+            </div>
+
+            <!-- Category Filter for Multi-Select -->
+            <div class="multicrop-filter-pills">
+              <button type="button" class="multicrop-filter-btn active" data-mfilter="all">All Crops (14)</button>
+              <button type="button" class="multicrop-filter-btn" data-mfilter="ner_special">⭐ NER Specials</button>
+              <button type="button" class="multicrop-filter-btn" data-mfilter="vegetables">Vegetables</button>
+              <button type="button" class="multicrop-filter-btn" data-mfilter="cole">Cole Crops</button>
+              <button type="button" class="multicrop-filter-btn" data-mfilter="roots">Roots & Tubers</button>
+              <button type="button" class="multicrop-filter-btn" data-mfilter="greens">Leafy Greens</button>
+              <button type="button" class="multicrop-filter-btn" data-mfilter="fruits">Fruits & Spices</button>
+            </div>
+
+            <!-- Multi-Crop Selection Grid -->
+            <div class="multicrop-items-grid" id="multicrop-items-grid">
+              <!-- Dynamically rendered checkbox cards for all crops by js/detection.js -->
+            </div>
+          </div>
+
+          <!-- RIGHT COLUMN: Dynamic Cold Storage Parameters & Chamber Output -->
+          <div class="multicrop-results-card">
+            <!-- Selected Chamber Tray / Cart Header -->
+            <div class="multicrop-tray-header">
+              <div class="multicrop-tray-title">
+                <span class="tray-fridge-icon">🧊</span>
+                <span>Active Fridge Chamber Load: <strong id="multicrop-count-label">2 crops selected</strong></span>
+              </div>
+              <span class="multicrop-status-badge" id="multicrop-compat-badge">Checking...</span>
+            </div>
+
+            <!-- Active Crop Pills -->
+            <div class="multicrop-selected-chips-wrap" id="multicrop-selected-chips">
+              <!-- Chips of currently added crops with (x) remove -->
+            </div>
+
+            <!-- Dynamic Microclimate Parameter Cards -->
+            <div class="multicrop-metrics-grid">
+              <!-- 1. DYNAMIC TEMPERATURE SETPOINT -->
+              <div class="multicrop-metric-card temp-theme" id="multicrop-temp-card">
+                <div class="multicrop-metric-top">
+                  <span class="multicrop-metric-label">1. Recommended Chamber Temp</span>
+                  <span class="multicrop-metric-icon">🌡️</span>
+                </div>
+                <div class="multicrop-metric-val" id="multicrop-target-temp">10.0°C</div>
+                <div class="multicrop-metric-sub" id="multicrop-temp-range-sub">Optimal Setpoint for Mixed Load</div>
+                
+                <!-- Meter / Scale -->
+                <div class="multicrop-meter-wrap">
+                  <div class="multicrop-meter-bar">
+                    <div class="multicrop-meter-fill temp" id="multicrop-temp-meter-fill" style="left: 0%; width: 50%;"></div>
+                    <div class="multicrop-meter-pointer" id="multicrop-temp-meter-pointer" style="left: 50%;"></div>
+                  </div>
+                  <div class="multicrop-meter-ticks">
+                    <span>0°C (Freeze)</span>
+                    <span id="multicrop-floor-tick">10.0°C (Chilling Floor)</span>
+                    <span>20°C (Ambient)</span>
+                  </div>
+                </div>
+
+                <div class="multicrop-metric-pill" id="multicrop-temp-pill">
+                  🛡️ Chilling Floor: Guarding sensitive crops
+                </div>
+              </div>
+
+              <!-- 2. DYNAMIC HUMIDITY SETPOINT -->
+              <div class="multicrop-metric-card hum-theme" id="multicrop-hum-card">
+                <div class="multicrop-metric-top">
+                  <span class="multicrop-metric-label">2. Recommended Chamber Humidity</span>
+                  <span class="multicrop-metric-icon">💧</span>
+                </div>
+                <div class="multicrop-metric-val" id="multicrop-target-hum">90% RH</div>
+                <div class="multicrop-metric-sub" id="multicrop-hum-range-sub">Optimal Safe Overlap: 88% – 92% RH</div>
+
+                <!-- Meter / Scale -->
+                <div class="multicrop-meter-wrap">
+                  <div class="multicrop-meter-bar">
+                    <div class="multicrop-meter-fill hum" id="multicrop-hum-meter-fill" style="left: 70%; width: 20%;"></div>
+                    <div class="multicrop-meter-pointer" id="multicrop-hum-meter-pointer" style="left: 80%;"></div>
+                  </div>
+                  <div class="multicrop-meter-ticks">
+                    <span>50% (Wilting)</span>
+                    <span>90% Target</span>
+                    <span>100% (Mold Risk)</span>
+                  </div>
+                </div>
+
+                <div class="multicrop-metric-pill" id="multicrop-hum-pill">
+                  💧 Transpiration Guard: Moisture retained
+                </div>
+              </div>
+
+              <!-- 3. BOTTLENECK SHELF LIFE -->
+              <div class="multicrop-metric-card life-theme" id="multicrop-life-card">
+                <div class="multicrop-metric-top">
+                  <span class="multicrop-metric-label">3. Batch Safe Holding Window</span>
+                  <span class="multicrop-metric-icon">⏱️</span>
+                </div>
+                <div class="multicrop-metric-val" id="multicrop-target-life">14 – 21 Days</div>
+                <div class="multicrop-metric-sub" id="multicrop-bottleneck-sub">⚠️ Limiting Bottleneck: Tomato (14-21 Days)</div>
+                <div class="multicrop-metric-pill" id="multicrop-life-pill">
+                  📦 First-in, First-out (FIFO) Dispatch
+                </div>
+              </div>
+
+              <!-- 4. COMBINED DC THERMAL & FAN LOAD -->
+              <div class="multicrop-metric-card power-theme" id="multicrop-power-card">
+                <div class="multicrop-metric-top">
+                  <span class="multicrop-metric-label">4. Solar DC Chamber Power Load</span>
+                  <span class="multicrop-metric-icon">⚡</span>
+                </div>
+                <div class="multicrop-metric-val" id="multicrop-target-power">42W – 50W</div>
+                <div class="multicrop-metric-sub" id="multicrop-power-sub">2 Crops Active Thermal Mass</div>
+                <div class="multicrop-metric-pill" id="multicrop-power-pill">
+                  ☀️ 100% PV Solar Matched (12V DC)
+                </div>
+              </div>
+            </div>
+
+            <!-- COMPATIBILITY & PHYSIOLOGICAL ANALYSIS ACCORDION / ADVISORY -->
+            <div class="multicrop-advisory-box" id="multicrop-advisory-box">
+              <div class="multicrop-advisory-header">
+                <h4><span>🧪</span> Physiological Diagnostics & Ethylene Co-Storage Analysis</h4>
+              </div>
+              <div class="multicrop-advisory-content" id="multicrop-advisory-content">
+                <!-- Dynamically generated physiological advisory & ethylene checks -->
+              </div>
+            </div>
+
+            <!-- INDIVIDUAL CROP HOLDING COMPARISON TABLE -->
+            <div class="multicrop-breakdown-box" id="multicrop-breakdown-box">
+              <div class="multicrop-breakdown-header">
+                <h4><span>📊</span> Mixed-Load Crop Physiological Comparison</h4>
+              </div>
+              <div class="multicrop-table-wrap">
+                <table class="multicrop-table" id="multicrop-table">
+                  <thead>
+                    <tr>
+                      <th>Crop</th>
+                      <th>Category</th>
+                      <th>Ideal Temp</th>
+                      <th>Chilling Floor</th>
+                      <th>Ideal RH</th>
+                      <th>Holding Life</th>
+                      <th>Ethylene Profile</th>
+                    </tr>
+                  </thead>
+                  <tbody id="multicrop-table-body">
+                    <!-- Dynamically populated rows -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- Action Controls -->
+            <div class="multicrop-actions-row">
+              <button type="button" class="btn btn-secondary btn-sm" id="btn-copy-multicrop-plan">
+                📋 Copy Multi-Crop Storage Protocol
+              </button>
+              <button type="button" class="btn btn-primary btn-sm" id="btn-sync-multicrop-to-controller">
+                ⚡ Apply Calculated Mixed Setpoints to Fridge Controller
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </section>
+  
 
   <!-- =========================================================================
        SECTION 3 — LIVE MONITORING DASHBOARD

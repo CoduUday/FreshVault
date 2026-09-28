@@ -3554,6 +3554,711 @@ button {
   }
 }
 
+/* ==========================================================================
+   Multi-Crop Co-Storage Optimizer (Dynamic Chamber Balancer) Styles
+   ========================================================================== */
+.multicrop-optimizer-wrap {
+  margin-top: 48px;
+  background: #FFFFFF;
+  border: 1px solid var(--color-border);
+  border-radius: 20px;
+  padding: 32px;
+  box-shadow: 0 10px 30px rgba(31, 78, 121, 0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  position: relative;
+  overflow: hidden;
+}
+
+.multicrop-optimizer-wrap::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 5px;
+  background: linear-gradient(90deg, #D9A74A 0%, #1F4E79 50%, #10B981 100%);
+}
+
+.multicrop-header-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 24px;
+  flex-wrap: wrap;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #E2E8F0;
+}
+
+.multicrop-header-left {
+  flex: 1;
+  min-width: 280px;
+}
+
+.multicrop-title {
+  font-size: 1.55rem;
+  font-weight: 800;
+  color: var(--color-primary-dark);
+  margin-top: 8px;
+  margin-bottom: 8px;
+  line-height: 1.25;
+}
+
+.multicrop-desc {
+  font-size: 0.92rem;
+  color: var(--color-text-muted);
+  line-height: 1.55;
+  max-width: 860px;
+}
+
+.multicrop-header-actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.btn-outline {
+  border: 1.5px solid var(--color-primary);
+  color: var(--color-primary);
+  background: transparent;
+  font-weight: 600;
+  padding: 8px 16px;
+  border-radius: 8px;
+  transition: var(--transition-fast);
+}
+
+.btn-outline:hover {
+  background: var(--color-primary-subtle);
+  transform: translateY(-1px);
+}
+
+/* Layout Grid */
+.multicrop-layout-grid {
+  display: grid;
+  grid-template-columns: 460px 1fr;
+  gap: 28px;
+  align-items: start;
+}
+
+@media (max-width: 1080px) {
+  .multicrop-layout-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Left: Multi-Crop Picker */
+.multicrop-picker-card {
+  background: var(--color-bg-alt);
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.multicrop-presets-bar {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: 12px;
+  padding: 12px 14px;
+}
+
+.multicrop-preset-label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--color-text-muted);
+}
+
+.multicrop-preset-chips-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.multicrop-preset-chip {
+  padding: 5px 10px;
+  font-size: 0.76rem;
+  font-weight: 600;
+  border-radius: 8px;
+  background: #F1F5F9;
+  color: #334155;
+  border: 1px solid #CBD5E1;
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+
+.multicrop-preset-chip:hover {
+  background: #E2E8F0;
+  color: var(--color-primary);
+  border-color: #94A3B8;
+}
+
+.multicrop-preset-chip.active {
+  background: #EFF6FF;
+  color: #1D4ED8;
+  border-color: #93C5FD;
+  font-weight: 700;
+}
+
+.multicrop-filter-pills {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.multicrop-filter-btn {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  background: #FFFFFF;
+  color: var(--color-text-muted);
+  border: 1px solid var(--color-border);
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+
+.multicrop-filter-btn:hover {
+  background: #F1F5F9;
+  color: var(--color-text-main);
+}
+
+.multicrop-filter-btn.active {
+  background: var(--color-primary);
+  color: #FFFFFF;
+  border-color: var(--color-primary);
+}
+
+/* Multi Crop Selection Items Grid */
+.multicrop-items-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  max-height: 480px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+@media (max-width: 500px) {
+  .multicrop-items-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.multicrop-items-grid::-webkit-scrollbar {
+  width: 6px;
+}
+
+.multicrop-items-grid::-webkit-scrollbar-thumb {
+  background: #CBD5E1;
+  border-radius: 10px;
+}
+
+.multicrop-item-card {
+  background: #FFFFFF;
+  border: 1.5px solid var(--color-border);
+  border-radius: 12px;
+  padding: 10px 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  position: relative;
+  transition: var(--transition-fast);
+  user-select: none;
+}
+
+.multicrop-item-card:hover {
+  border-color: #94A3B8;
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
+}
+
+.multicrop-item-card.selected {
+  border-color: var(--color-primary);
+  background: linear-gradient(180deg, #F0F7FF 0%, #FFFFFF 100%);
+  box-shadow: 0 2px 10px rgba(31, 78, 121, 0.12);
+}
+
+.multicrop-item-checkbox {
+  width: 18px;
+  height: 18px;
+  border-radius: 5px;
+  border: 2px solid #94A3B8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: var(--transition-fast);
+  background: #FFFFFF;
+}
+
+.multicrop-item-card.selected .multicrop-item-checkbox {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: #FFFFFF;
+}
+
+.multicrop-item-checkbox::after {
+  content: '✓';
+  font-size: 0.72rem;
+  font-weight: 900;
+  display: none;
+}
+
+.multicrop-item-card.selected .multicrop-item-checkbox::after {
+  display: block;
+}
+
+.multicrop-item-icon {
+  font-size: 1.5rem;
+  line-height: 1;
+}
+
+.multicrop-item-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.multicrop-item-name {
+  font-size: 0.84rem;
+  font-weight: 700;
+  color: var(--color-text-main);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.multicrop-item-meta {
+  font-size: 0.72rem;
+  color: var(--color-text-light);
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  margin-top: 2px;
+}
+
+.multicrop-item-tag {
+  background: #E2E8F0;
+  padding: 1px 5px;
+  border-radius: 4px;
+  font-weight: 600;
+}
+
+/* Right: Results Card */
+.multicrop-results-card {
+  background: #FFFFFF;
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+/* Fridge Tray Header & Active Crop Chips */
+.multicrop-tray-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.multicrop-tray-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--color-primary-dark);
+}
+
+.tray-fridge-icon {
+  font-size: 1.4rem;
+}
+
+.multicrop-status-badge {
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.multicrop-status-badge.status-green {
+  background: #DCFCE7;
+  color: #166534;
+  border: 1px solid #86EFAC;
+}
+
+.multicrop-status-badge.status-yellow {
+  background: #FEF3C7;
+  color: #92400E;
+  border: 1px solid #FDE68A;
+}
+
+.multicrop-status-badge.status-red {
+  background: #FEE2E2;
+  color: #991B1B;
+  border: 1px solid #FCA5A5;
+}
+
+.multicrop-selected-chips-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  min-height: 42px;
+  background: var(--color-bg-alt);
+  border: 1px dashed var(--color-border);
+  border-radius: 12px;
+  padding: 10px 14px;
+  align-items: center;
+}
+
+.multicrop-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #FFFFFF;
+  border: 1px solid #CBD5E1;
+  border-radius: 20px;
+  padding: 4px 10px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--color-text-main);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  animation: fadeInChip 0.2s ease;
+}
+
+@keyframes fadeInChip {
+  from { opacity: 0; transform: scale(0.9); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.multicrop-chip-remove {
+  cursor: pointer;
+  font-weight: 800;
+  color: #94A3B8;
+  font-size: 0.85rem;
+  margin-left: 2px;
+  line-height: 1;
+  transition: color 0.15s;
+}
+
+.multicrop-chip-remove:hover {
+  color: #EF4444;
+}
+
+.multicrop-empty-state {
+  font-size: 0.84rem;
+  color: var(--color-text-light);
+  font-style: italic;
+}
+
+/* Dynamic Parameter Triad+ Grid */
+.multicrop-metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+@media (max-width: 640px) {
+  .multicrop-metrics-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.multicrop-metric-card {
+  background: #FFFFFF;
+  border-radius: 14px;
+  padding: 18px 20px;
+  border: 1px solid #E2E8F0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 8px;
+  box-shadow: var(--shadow-sm);
+  transition: var(--transition-fast);
+}
+
+.multicrop-metric-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.multicrop-metric-card.temp-theme {
+  border-top: 4px solid #0284C7;
+  background: linear-gradient(180deg, #F0F9FF 0%, #FFFFFF 40%);
+}
+
+.multicrop-metric-card.hum-theme {
+  border-top: 4px solid #6366F1;
+  background: linear-gradient(180deg, #EEF2FF 0%, #FFFFFF 40%);
+}
+
+.multicrop-metric-card.life-theme {
+  border-top: 4px solid #10B981;
+  background: linear-gradient(180deg, #F0FDF4 0%, #FFFFFF 40%);
+}
+
+.multicrop-metric-card.power-theme {
+  border-top: 4px solid #D9A74A;
+  background: linear-gradient(180deg, #FFFBEB 0%, #FFFFFF 40%);
+}
+
+.multicrop-metric-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.multicrop-metric-label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  color: var(--color-text-muted);
+}
+
+.multicrop-metric-icon {
+  font-size: 1.3rem;
+}
+
+.multicrop-metric-val {
+  font-size: 1.85rem;
+  font-weight: 900;
+  line-height: 1.1;
+  color: var(--color-text-main);
+}
+
+.multicrop-metric-card.temp-theme .multicrop-metric-val { color: #0369A1; }
+.multicrop-metric-card.hum-theme .multicrop-metric-val { color: #4338CA; }
+.multicrop-metric-card.life-theme .multicrop-metric-val { color: #065F46; }
+.multicrop-metric-card.power-theme .multicrop-metric-val { color: #92400E; }
+
+.multicrop-metric-sub {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #64748B;
+}
+
+.multicrop-meter-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 4px;
+}
+
+.multicrop-meter-bar {
+  height: 6px;
+  background: #E2E8F0;
+  border-radius: 6px;
+  position: relative;
+}
+
+.multicrop-meter-fill {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+}
+
+.multicrop-meter-fill.temp {
+  background: linear-gradient(90deg, #38BDF8, #0284C7);
+}
+
+.multicrop-meter-fill.hum {
+  background: linear-gradient(90deg, #818CF8, #4F46E5);
+}
+
+.multicrop-meter-pointer {
+  position: absolute;
+  top: -4px;
+  width: 14px;
+  height: 14px;
+  background: #FFFFFF;
+  border: 3px solid var(--color-primary);
+  border-radius: 50%;
+  transform: translateX(-50%);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+  transition: left 0.3s ease;
+}
+
+.multicrop-meter-ticks {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: #94A3B8;
+}
+
+.multicrop-metric-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.74rem;
+  font-weight: 700;
+  padding: 4px 8px;
+  border-radius: 6px;
+  background: #F1F5F9;
+  color: #475569;
+  margin-top: 6px;
+  width: fit-content;
+}
+
+/* Physiological Advisory & Ethylene Analysis */
+.multicrop-advisory-box {
+  background: #F8FAFC;
+  border: 1px solid #E2E8F0;
+  border-radius: 14px;
+  padding: 16px 20px;
+}
+
+.multicrop-advisory-header h4 {
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: var(--color-primary-dark);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.multicrop-advisory-content {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.advisory-item-card {
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-size: 0.82rem;
+  line-height: 1.45;
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+
+.advisory-item-card.info {
+  background: #F0F9FF;
+  border: 1px solid #BAE6FD;
+  color: #0369A1;
+}
+
+.advisory-item-card.warning {
+  background: #FFFBEB;
+  border: 1px solid #FDE68A;
+  color: #92400E;
+}
+
+.advisory-item-card.danger {
+  background: #FEF2F2;
+  border: 1px solid #FECACA;
+  color: #991B1B;
+}
+
+.advisory-item-card.success {
+  background: #F0FDF4;
+  border: 1px solid #BBF7D0;
+  color: #166534;
+}
+
+.advisory-item-icon {
+  font-size: 1.1rem;
+  line-height: 1;
+}
+
+/* Individual Crop Holding Breakdown Table */
+.multicrop-breakdown-box {
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: 14px;
+  padding: 16px 20px;
+}
+
+.multicrop-breakdown-header h4 {
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: var(--color-primary-dark);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.multicrop-table-wrap {
+  overflow-x: auto;
+}
+
+.multicrop-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.8rem;
+  text-align: left;
+}
+
+.multicrop-table th {
+  background: #F1F5F9;
+  color: #475569;
+  font-weight: 700;
+  padding: 8px 12px;
+  border-bottom: 2px solid #CBD5E1;
+  white-space: nowrap;
+}
+
+.multicrop-table td {
+  padding: 8px 12px;
+  border-bottom: 1px solid #E2E8F0;
+  color: var(--color-text-main);
+  white-space: nowrap;
+}
+
+.multicrop-table tr:hover td {
+  background: #F8FAFC;
+}
+
+.multicrop-table .crop-name-cell {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 700;
+}
+
+.multicrop-table .tag-pill {
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  background: #E2E8F0;
+  color: #334155;
+}
+
+/* Action Controls */
+.multicrop-actions-row {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  padding-top: 12px;
+  border-top: 1px solid #E2E8F0;
+}
+
+
 /* Telemetry Card Live Sync Pulse Animation */
 @keyframes telemetryPulse {
   0% {
